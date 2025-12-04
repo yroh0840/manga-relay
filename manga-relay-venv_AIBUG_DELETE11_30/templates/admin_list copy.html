@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Comics List</title>
+    <style>
+        body { font-family: sans-serif; padding: 20px; }
+
+        .comic-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: 20px;
+        }
+
+        .comic-card {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 10px;
+            text-align: center;
+            background: #fafafa;
+            position: relative;
+        }
+
+        .deleted {
+            opacity: 0.4;
+        }
+
+        .thumbnail {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+            border-radius: 6px;
+        }
+
+        .delete-btn {
+            margin-top: 10px;
+            display: inline-block;
+            padding: 5px 10px;
+            background: #ff6565;
+            color: white;
+            border-radius: 4px;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .delete-btn:hover {
+            background: #e04444;
+        }
+
+        .view-btn {
+            margin-top: 10px;
+            display: inline-block;
+            padding: 5px 10px;
+            background: #3f8bff;
+            color: white;
+            border-radius: 4px;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .view-btn:hover {
+            background: #1f6ae0;
+        }
+
+    </style>
+</head>
+<body>
+
+<h2>管理画面：コミック一覧</h2>
+
+<div class="comic-grid">
+    {% for comic in comics %}
+        <div class="comic-card {% if comic.is_deleted %}deleted{% endif %}">
+
+            <!-- サムネイル表示（最初のコマ or noimage） -->
+            {% if comic.thumbnail %}
+                <img src="{{ url_for('uploaded_file', filename=comic.thumbnail) }}" class="thumbnail">
+            {% else %}
+                <img src="{{ url_for('static', filename='noimage.png') }}" class="thumbnail">
+            {% endif %}
+
+            <p>{{ comic.title }}</p>
+
+            <!-- コマ一覧へ -->
+            <a href="{{ url_for('admin_comic_detail', comic_id=comic.id) }}" class="view-btn">
+                コマを表示
+            </a>
+
+            <!-- 削除ボタン：is_deleted が 0 の時だけ表示 -->
+            {% if not comic.is_deleted %}
+                <a href="{{ url_for('delete_comic', comic_id=comic.id) }}"
+                   class="delete-btn">
+                    削除
+                </a>
+            {% endif %}
+
+        </div>
+    {% endfor %}
+</div>
+
+</body>
+</html>

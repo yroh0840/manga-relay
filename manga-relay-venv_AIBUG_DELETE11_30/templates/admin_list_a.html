@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>管理画面 A</title>
+    <style>
+        .deleted { opacity: 0.4; }
+    </style>
+</head>
+<body>
+
+<h1>管理画面 A（縦リスト）</h1>
+
+{% for comic in comics %}
+<div class="comic-item {% if comic.is_deleted %}deleted{% endif %}">
+    <h2>{{ comic.title }}</h2>
+
+    {% if not comic.is_deleted %}
+        <form action="{{ url_for('admin_soft_delete_comic', comic_id=comic.id) }}" method="POST">
+            <button type="submit">📕 コミックを削除（ソフト）</button>
+        </form>
+    {% else %}
+        <form action="{{ url_for('admin_restore_comic', comic_id=comic.id) }}" method="POST">
+            <button type="submit">♻️ 復元</button>
+        </form>
+    {% endif %}
+
+    <div style="margin-left:20px;">
+        {% for koma in comic.komas.order_by(Koma.id).all() %}
+            <div style="margin-bottom:5px;" class="{% if koma.is_deleted %}deleted{% endif %}">
+                <img src="{{ url_for('uploaded_file', filename=koma.image_path) }}" width="120">
+
+                {% if not koma.is_deleted %}
+                    <form action="{{ url_for('admin_soft_delete_koma', koma_id=koma.id) }}" method="POST">
+                        <button type="submit">コマ削除</button>
+                    </form>
+                {% else %}
+                    <form action="{{ url_for('admin_restore_koma', koma_id=koma.id) }}" method="POST">
+                        <button type="submit">復元</button>
+                    </form>
+                {% endif %}
+
+            </div>
+        {% endfor %}
+    </div>
+
+    <hr>
+</div>
+{% endfor %}
+
+</body>
+</html>

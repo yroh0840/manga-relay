@@ -1,0 +1,47 @@
+<!-- templates/admin_comic_detail.html -->
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>管理画面 - コミック詳細</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 p-6">
+  <div class="max-w-6xl mx-auto">
+    <h1 class="text-3xl font-bold mb-4">管理画面 - {{ comic.title }}</h1>
+    <p class="text-gray-600 mb-6">ID: {{ comic.id }} | 開始日: {{ comic.started_at.strftime('%Y/%m/%d') }}</p>
+
+    <!-- コミック削除ボタン -->
+    <form action="{{ url_for('delete_comic', comic_id=comic.id) }}" method="POST"
+          onsubmit="return confirm('このコミックを完全に削除しますか？')"
+          class="mb-6">
+        <button class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700">コミック削除</button>
+    </form>
+
+    <!-- コマグリッド -->
+    <div class="grid grid-cols-3 md:grid-cols-4 gap-4">
+      {% for koma in comic.komas.order_by(Koma.frame_number).all() %}
+      <div class="relative border rounded-lg overflow-hidden">
+        <img src="{{ url_for('static', filename='uploads/' ~ koma.image_filename) }}"
+             class="w-full h-32 object-cover">
+        {% if koma.is_deleted %}
+        <span class="absolute top-0 left-0 bg-red-500 text-white text-xs px-1 rounded">削除済み</span>
+        {% endif %}
+
+        <!-- コマ削除ボタン -->
+        <form action="{{ url_for('delete_koma', koma_id=koma.id) }}" method="POST"
+              onsubmit="return confirm('このコマを削除しますか？')"
+              class="absolute top-1 right-1">
+          <button class="bg-red-500 text-white px-2 py-1 text-xs rounded hover:bg-red-600">削除</button>
+        </form>
+      </div>
+      {% endfor %}
+    </div>
+
+    <div class="mt-6">
+      <a href="{{ url_for('admin_list') }}" class="text-indigo-600 hover:underline">← 管理画面に戻る</a>
+    </div>
+  </div>
+</body>
+</html>

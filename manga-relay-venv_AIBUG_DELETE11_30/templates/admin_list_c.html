@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>管理画面 C</title>
+    <style>
+        .wrap { display: flex; }
+        .left { width: 30%; border-right: 1px solid #ddd; padding-right: 20px; }
+        .right { width: 70%; padding-left: 20px; }
+        .deleted { opacity: 0.4; }
+        img { width: 120px; margin: 5px; }
+    </style>
+</head>
+<body>
+
+<h1>管理画面 C（2カラム）</h1>
+
+<div class="wrap">
+    <div class="left">
+        <h2>Comic 一覧</h2>
+        {% for comic in comics %}
+            <div class="{% if comic.is_deleted %}deleted{% endif %}">
+                <h3>{{ comic.title }}</h3>
+
+                {% if not comic.is_deleted %}
+                    <form action="{{ url_for('admin_soft_delete_comic', comic_id=comic.id) }}" method="POST">
+                        <button type="submit">📕 ソフト削除</button>
+                    </form>
+                {% else %}
+                    <form action="{{ url_for('admin_restore_comic', comic_id=comic.id) }}" method="POST">
+                        <button type="submit">♻️ 復元</button>
+                    </form>
+                {% endif %}
+            </div>
+            <hr>
+        {% endfor %}
+    </div>
+
+    <div class="right">
+        <h2>コマ一覧（全て）</h2>
+
+        {% for comic in comics %}
+            <h3>{{ comic.title }}</h3>
+
+            {% for koma in comic.komas.order_by(Koma.id).all() %}
+                <div class="{% if koma.is_deleted %}deleted{% endif %}" style="display:inline-block;">
+                    <img src="{{ url_for('uploaded_file', filename=koma.image_path) }}">
+
+                    {% if not koma.is_deleted %}
+                        <form action="{{ url_for('admin_soft_delete_koma', koma_id=koma.id) }}" method="POST">
+                            <button type="submit">削除</button>
+                        </form>
+                    {% else %}
+                        <form action="{{ url_for('admin_restore_koma', koma_id=koma.id) }}" method="POST">
+                            <button type="submit">復元</button>
+                        </form>
+                    {% endif %}
+                </div>
+            {% endfor %}
+
+            <hr>
+        {% endfor %}
+    </div>
+</div>
+
+</body>
+</html>

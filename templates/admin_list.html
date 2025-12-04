@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <title>管理画面 - Comic 管理</title>
+
+    <style>
+        body {
+            font-family: sans-serif;
+            line-height: 1.6;
+            padding: 20px;
+            background: #f0f0f0;
+        }
+
+        .comic-box {
+            position: relative;
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+        }
+
+        .comic-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .comic-header.deleted {
+            opacity: 0.4;
+        }
+
+        .thumb {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 6px;
+            background: #ddd;
+        }
+
+        .comic-title {
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        /* --- コマ一覧 --- */
+        .koma-grid {
+            margin-top: 15px;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 12px;
+        }
+
+        .koma-card {
+            position: relative;
+            background: #fff;
+            padding: 10px;
+            border-radius: 8px;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .koma-card.deleted {
+            opacity: 0.4;
+        }
+
+        .deleted-badge {
+            position: absolute;
+            top: 5px;
+            left: 5px;
+            background: red;
+            color: white;
+            padding: 2px 6px;
+            font-size: 10px;
+            border-radius: 4px;
+        }
+
+        .deleted-badge-comic {
+            position: absolute;
+            top: 0;
+            left: 0;
+            background: red;
+            color: white;
+            padding: 2px 6px;
+            font-size: 10px;
+            border-radius: 4px;
+        }
+
+
+        .koma-card img {
+            width: 100%;
+            height: 120px;
+            object-fit: cover;
+            border-radius: 6px;
+        }
+
+        .delete-btn {
+            display: inline-block;
+            width: auto;
+            padding: 5px 10px;
+            background: #e53935;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+
+
+        .delete-btn:hover {
+            background: #c62828;
+        }
+
+        .comic-delete-form {
+            margin-top: 10px;
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+
+    <script>
+        // コミックをクリックしたらコマ一覧を開閉
+        function toggleKomas(id) {
+            const section = document.getElementById("koma-section-" + id);
+            section.classList.toggle("hidden");
+        }
+    </script>
+</head>
+
+<body>
+
+    <h1>管理画面 - Comic 一覧</h1>
+
+    {% for comic in comics %}
+    <div class="comic-box">
+
+        <!-- 📌 コミックヘッダ（クリックで展開） -->
+        <div class="comic-header {% if comic.is_deleted %}deleted{% endif %}" onclick="toggleKomas({{ comic.id }})">
+            {% if comic.is_deleted %}
+            <span class="deleted-badge-comic">削除済</span>
+            {% endif %}
+
+            {% set latest_koma = comic.komas.order_by(Koma.frame_number).first() %}
+            {% if latest_koma %}
+            <img class="thumb" src="{{ url_for('static', filename='uploads/' ~ latest_koma.image_filename) }}">
+            {% else %}
+            <div class="thumb"></div>
+            {% endif %}
+
+            <div>
+                <div class="comic-title">{{ comic.title }}</div>
+                <div>{{ comic.komas.count() }} コマ</div>
+            </div>
+        </div>
+        {% if not comic.is_deleted %}
+        <!-- コミック削除 -->
+        <form class="comic-delete-form" action="{{ url_for('delete_comic', comic_id=comic.id) }}" method="POST"
+            onsubmit="event.stopPropagation(); return confirm('このコミックを削除します（ソフトデリート）。よろしいですか？');">
+            <button class="delete-btn" onclick="event.stopPropagation();">
+                コミック削除
+            </button>
+        </form>
+        {% endif %}
+
+
+
+        <!-- ▼▼▼ コマ一覧 ▼▼▼ -->
+        <div id="koma-section-{{ comic.id }}" class="koma-grid hidden">
+
+            {% for koma in comic.komas.order_by(Koma.frame_number).all() %}
+            <div class="koma-card {% if koma.is_deleted %}deleted{% endif %}">
+
+                {% if koma.is_deleted %}
+                <span class="deleted-badge">削除済</span>
+                {% endif %}
+
+
+
+                <img src="{{ url_for('static', filename='uploads/' ~ koma.image_filename) }}">
+
+                <div>コマ {{ koma.frame_number }}</div>
+
+                <!-- コマ削除（削除済みならボタンを消す） -->
+                {% if not koma.is_deleted %}
+                <form action="{{ url_for('delete_koma', koma_id=koma.id) }}" method="POST"
+                    onsubmit="event.stopPropagation(); return confirm('コマ {{ koma.frame_number }} を削除しますか？');">
+                    <button class="delete-btn" onclick="event.stopPropagation();">
+                        コマ削除
+                    </button>
+                </form>
+                {% endif %}
+
+            </div>
+            {% endfor %}
+
+        </div>
+        <!-- ▲▲▲ コマ一覧 ▲▲▲ -->
+
+    </div>
+    {% endfor %}
+
+</body>
+
+</html>

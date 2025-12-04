@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <title>{{ comic.title }} - 詳細</title>
+</head>
+<body class="bg-gray-100 p-4 md:p-8">
+  <div class="max-w-3xl mx-auto">
+
+    <!-- ヘッダー -->
+    <header class="mb-6">
+      <h1 class="text-3xl font-bold text-indigo-700">{{ comic.title }}</h1>
+      <p class="text-gray-600">開始日: {{ comic.started_at.strftime('%Y/%m/%d') }}</p>
+
+      <!-- トップページへ戻る -->
+      <a href="{{ url_for('index') }}"
+        class="inline-block mt-3 px-4 py-2 bg-gray-200 text-gray-700 rounded-lg shadow hover:bg-gray-300">
+        ← トップページへ戻る
+      </a>
+    </header>
+
+    <!-- コマ一覧 -->
+    <section class="bg-white p-4 rounded-xl shadow mb-6">
+      <h2 class="text-xl font-bold mb-3">これまでのコマ</h2>
+
+      <div class="space-y-6">
+        {% for koma in komas %}
+        <div class="border rounded-lg overflow-hidden bg-gray-50 shadow">
+          <img class="w-full" src="{{ url_for('static', filename='uploads/' ~ koma.image_filename) }}" alt="">
+               
+          <div class="p-2 text-gray-600 text-sm">
+            コマ番号：{{ koma.frame_number }}　
+            投稿日：{{ koma.posted_at.strftime('%Y/%m/%d %H:%M') }}
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </section>
+
+    <!-- 続きを投稿フォーム -->
+    <section class="bg-white p-6 rounded-xl shadow">
+      <h2 class="text-xl font-bold mb-3">続きのコマを投稿する</h2>
+
+      <form action="{{ url_for('post_frame') }}" method="POST" enctype="multipart/form-data" class="space-y-4">
+        <input type="hidden" name="comic_id" value="{{ comic.id }}">
+
+        <div>
+          <label class="block text-sm font-medium mb-1">画像ファイル</label>
+          <input type="file" name="file" accept="image/png,image/jpeg" required
+                 class="w-full text-sm text-gray-600 file:bg-indigo-50 file:text-indigo-700 file:px-4 file:py-2
+                        file:rounded-lg file:border-0 hover:file:bg-indigo-100 cursor-pointer">
+        </div>
+
+        <button type="submit"
+          class="w-full py-3 bg-indigo-600 text-white font-bold rounded-xl shadow hover:bg-indigo-700">
+          コマを追加
+        </button>
+      </form>
+    </section>
+
+  </div>
+</body>
+</html>

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>管理画面 B</title>
+    <style>
+        .grid { display: flex; flex-wrap: wrap; gap: 20px; }
+        .comic-card {
+            width: 250px;
+            border: 1px solid #ccc;
+            padding: 15px;
+            border-radius: 8px;
+        }
+        .deleted { opacity: 0.4; }
+        img { width: 100%; }
+    </style>
+</head>
+<body>
+
+<h1>管理画面 B（カード表示）</h1>
+
+<div class="grid">
+{% for comic in comics %}
+<div class="comic-card {% if comic.is_deleted %}deleted{% endif %}">
+    <h3>{{ comic.title }}</h3>
+
+    {% set komas = comic.komas.order_by(Koma.id).all() %}
+    {% if komas %}
+        <img src="{{ url_for('uploaded_file', filename=komas[0].image_path) }}">
+    {% endif %}
+
+    {% if not comic.is_deleted %}
+        <form action="{{ url_for('admin_soft_delete_comic', comic_id=comic.id) }}" method="POST">
+            <button type="submit">📕 コミック削除</button>
+        </form>
+    {% else %}
+        <form action="{{ url_for('admin_restore_comic', comic_id=comic.id) }}" method="POST">
+            <button type="submit">♻️ 復元</button>
+        </form>
+    {% endif %}
+</div>
+{% endfor %}
+</div>
+
+</body>
+</html>
