@@ -101,3 +101,12 @@ echo "Backup complete!"
 
 ---
 
+## 7. githubとzip保存を初めての操作手順
+
+1. git init
+2. git add .
+3. git commit -m "initial"
+4. git checkout -b main
+5. git push origin main
+6. backup.sh実行
+7. git remote add origin https://github.com/あなたの名前/リポジトリ名.git

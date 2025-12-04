@@ -1,17 +1,46 @@
 #!/bin/bash
 
-# --- Git による自動コミット & push ---
-git add .
+# ========================
+# 設定
+# ========================
+BACKUP_DIR="./backups"
+BRANCH=$(git symbolic-ref --short HEAD 2>/dev/null)
 
-# 変更がある場合のみコミット
-if ! git diff-index --quiet HEAD --; then
-    git commit -m "auto backup"
+# ブランチ検出できない場合（コミットがない or Git管理外）
+if [ -z "$BRANCH" ]; then
+  echo "Git ブランチが存在しません。初回コミットを実施します。"
+  git add .
+  git commit -m "initial commit" || true
+  BRANCH=$(git symbolic-ref --short HEAD)
 fi
 
-# main ブランチに push（初回 push の場合 -u オプション）
-git push -u origin main
+mkdir -p "$BACKUP_DIR"
 
-# --- ZIP バックアップ作成 ---
-python3 backup_zip.py
+# ========================
+# ZIP 作成
+# ========================
+TS=$(date +"%Y%m%d_%H%M")
+ZIP_PATH="$BACKUP_DIR/backup_${TS}.zip"
+
+zip -r "$ZIP_PATH" . \
+  -x "venv/*" \
+  -x ".git/*" \
+  -x "backups/*"
+
+echo "Backup created: $ZIP_PATH"
+
+# ========================
+# Git 操作 (add → commit → push)
+# ========================
+git add .
+
+git commit -m "auto backup" || echo "No changes to commit."
+
+echo "Pushing to origin/$BRANCH ..."
+git push origin "$BRANCH" || {
+  echo "⚠ push に失敗しました。リモートに $BRANCH ブランチが存在しない可能性があります。"
+  echo "リモートに作成するには:"
+  echo "    git push -u origin $BRANCH"
+}
 
 echo "Backup complete!"
