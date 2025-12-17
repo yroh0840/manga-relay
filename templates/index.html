@@ -5,126 +5,180 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>漫画リレー - トップページ</title>
-  <!-- Tailwind CSS CDN -->
+
+  <!-- Tailwind CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- ★重要：darkMode を class にする -->
+  <script>
+    tailwind.config = {
+      darkMode: 'class'
+    }
+  </script>
+
   <style>
-    /* Interフォントを適用 */
     body {
       font-family: 'Inter', sans-serif;
-      background-color: #f7f7f7;
     }
   </style>
 </head>
 
-<body class="min-h-screen p-4 md:p-8">
+<body
+  class="min-h-screen p-4 md:p-8 transition-colors duration-300
+         bg-gray-100 dark:bg-[#232325]
+         text-gray-800 dark:text-gray-200">
+
   <div class="max-w-4xl mx-auto">
 
     <!-- ヘッダー -->
-    <header class="text-center mb-10">
-      <h1 class="text-4xl font-extrabold text-indigo-700">✍️ 漫画リレー</h1>
-      <p class="text-gray-600 mt-2">みんなで一つの物語を紡ごう。</p>
+    <header class="relative text-center mb-10">
+      <h1 class="text-4xl font-extrabold text-indigo-700 dark:text-indigo-400">
+        ✍️ 漫画リレー
+      </h1>
+      <p class="text-gray-600 dark:text-gray-400 mt-2">
+        みんなで一つの物語を紡ごう。
+      </p>
+
+      <!-- ダークモード切替 -->
+      <button id="theme-toggle"
+        class="absolute top-0 right-0
+               p-2 rounded-full
+               bg-gray-200 dark:bg-gray-700
+               text-gray-800 dark:text-gray-200
+               hover:scale-105 transition">
+        🌙
+      </button>
     </header>
 
     <!-- 投稿エリア -->
-    <section id="post-area" class="bg-white p-6 rounded-xl shadow-lg mb-10">
-      <h2 class="text-2xl font-semibold text-gray-800 mb-4 border-b pb-2">コマを投稿する</h2>
+    <section
+      class="bg-white dark:bg-gray-900
+             p-6 rounded-xl shadow-lg mb-10
+             border border-gray-200 dark:border-gray-700">
 
-      <!-- 投稿フォーム -->
+      <h2
+        class="text-2xl font-semibold
+               text-gray-800 dark:text-[#E4EFFF]
+               mb-4 border-b pb-2
+               border-gray-200 dark:border-gray-700">
+        先頭のコマを投稿する
+      </h2>
+
       <form action="{{ url_for('post_frame') }}" method="POST" enctype="multipart/form-data" class="space-y-4">
 
-        <!-- 1. 投稿先選択
-        <div class="flex flex-col sm:flex-row gap-4">
-          <div class="flex-1">
-            <label for="comic_select" class="block text-sm font-medium text-gray-700 mb-1">投稿先のリレーを選択</label>
-            <select id="comic_select" name="comic_id"
-              class="w-full p-2 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 bg-gray-50 text-gray-900">
-              <option value="new" selected>新しい漫画リレーを開始する</option>
-              ★既存の漫画リレーのオプションが入ります★ -->
-              <!-- {% for comic in comics %} -->
-              <!-- <option value="{{ comic.id }}"> -->
-                <!-- ID: {{ comic.id }} - {{ comic.title }} ({{ comic.komas.count() }}コマ) -->
-              </option>
-              <!-- {% endfor %} -->
-            </select>
-            <!-- <p class="text-xs text-gray-500 mt-1">「新しい漫画リレーを開始する」を選ぶと、あなたが描いたコマが第1話になります。</p> -->
-          <!-- </div> -->
-        <!-- </div> -->
-
-        <!-- 2. ファイル選択 -->
         <div>
-          <label for="file_input" class="block text-sm font-medium text-gray-700 mb-1">コマの画像を選択 (PNG/JPG)</label>
-          <input type="file" id="file_input" name="file" accept="image/png, image/jpeg" required class="w-full text-sm text-gray-500
-                                  file:mr-4 file:py-2 file:px-4
-                                  file:rounded-full file:border-0
-                                  file:text-sm file:font-semibold
-                                  file:bg-indigo-50 file:text-indigo-700
-                                  hover:file:bg-indigo-100 cursor-pointer">
+          <label class="block text-sm font-medium text-gray-700 dark:text-[#B4BFD0] mb-1">
+            コマの画像を選択 (PNG/JPG)
+          </label>
+          <input type="file" name="file" required
+            class="w-full text-sm text-gray-500 
+                   file:mr-4 file:py-2 file:px-4
+                   file:rounded-full file:border-0
+                   file:text-sm file:font-semibold
+                   file:bg-indigo-50 file:dark:bg-[#E4EFFF] file:text-indigo-700
+                   hover:file:bg-indigo-100 cursor-pointer">
         </div>
 
-        <!-- 3. 投稿ボタン -->
-        <button type="submit" class="w-full py-3 px-4 bg-indigo-600 text-white font-bold rounded-xl 
-                               shadow-md hover:bg-indigo-700 transition duration-150">
+        <button type="submit"
+          class="w-full py-3 px-4
+                 bg-indigo-600 text-white dark:text-[#E4EFFF] font-bold rounded-xl
+                 shadow-md hover:bg-indigo-700 transition">
           コマを投稿！
         </button>
-        <input type="text" name="title" placeholder="タイトル（任意）" class="w-full p-2 border rounded-lg bg-gray-50">
 
+        <input type="text" name="title" placeholder="タイトル（任意）"
+          class="w-full p-2 rounded-lg
+                 bg-gray-50 dark:bg-gray-800
+                 border border-gray-300 dark:border-gray-600
+                 text-gray-800 dark:text-gray-100">
       </form>
     </section>
 
-    <!-- 漫画リレー一覧 -->
-    <section id="comic-list">
-      <h2 class="text-2xl font-semibold text-gray-800 mb-4 border-b pb-2">進行中のリレー一覧</h2>
+    <!-- リレー一覧 -->
+    <section>
+      <h2
+        class="text-2xl font-semibold
+               text-gray-800 dark:text-[#E4EFFF]
+               mb-4 border-b pb-2
+               border-gray-200 dark:border-gray-700">
+        進行中のリレー一覧
+      </h2>
 
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
 
-        {% if comics %}
         {% for comic in comics %}
         <div
-          class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition duration-300 border border-gray-100">
-          <!-- コマ詳細ページへのリンク -->
+          class="bg-white dark:bg-gray-900
+                 rounded-xl shadow-md overflow-hidden
+                 border border-gray-200 dark:border-gray-700
+                 transition hover:shadow-xl">
+
           <a href="{{ url_for('comic_detail', comic_id=comic.id) }}" class="block p-4">
-            <!-- リレー情報 -->
+
             <div class="flex justify-between items-start mb-2">
-              <h3 class="text-xl font-bold text-gray-800 truncate">{{ comic.title }}</h3>
-              <span
-                class="text-sm font-medium px-3 py-1 rounded-full 
-                                    {% if comic.is_completed %} bg-red-100 text-red-700 {% else %} bg-green-100 text-green-700 {% endif %}">
+              <h3 class="text-xl font-bold text-gray-800 dark:text-[#E4EFFF] truncate">
+                {{ comic.title }}
+              </h3>
+              <span class="text-sm font-medium px-3 py-1 rounded-full
+                {% if comic.is_completed %}
+                  bg-red-100 text-red-700
+                {% else %}
+                  dark:bg-green-950 bg-green-100 text-green-600
+                {% endif %}">
                 {% if comic.is_completed %} 完了 {% else %} 進行中 {% endif %}
               </span>
             </div>
 
-            <!-- コマ数と開始日 -->
-            <p class="text-sm text-gray-500 mb-3">
-              <span class="font-semibold text-indigo-500">{{Koma.query.filter_by(comic_id=comic.id, is_deleted=0).count()}}</span> コマ投稿済み |
-              開始: {{ comic.started_at.strftime('%Y/%m/%d') }}
+            <p class="text-sm text-gray-500 dark:text-gray-400 mb-3">
+              {{ comic.started_at.strftime('%Y/%m/%d') }}
             </p>
-            <!-- 最新コマのプレビュー (Komaが存在する場合) -->
-            <!-- ★★★ 修正箇所: db.desc() を使って正しくソートします ★★★ -->
-            {% set latest_koma = Koma.query.filter_by(comic_id=comic.id,
-            is_deleted=0).order_by(Koma.frame_number.desc()).first() %}
+
+            {% set latest_koma = Koma.query.filter_by(comic_id=comic.id, is_deleted=0)
+              .order_by(Koma.frame_number.desc()).first() %}
+
             {% if latest_koma %}
-            <div class="w-full h-40 bg-gray-100 rounded-lg overflow-hidden flex items-center justify-center">
+            <div class="w-full h-40 bg-gray-100 dark:bg-gray-800 rounded-lg overflow-hidden">
               <img src="{{ url_for('static', filename='uploads/' ~ latest_koma.image_filename) }}"
-                class="object-cover w-full h-full" onerror="this.src='https://placehold.co/400x160?text=Not+Found'">
+                class="object-cover w-full h-full">
             </div>
             {% else %}
-            <div class="w-full h-40 bg-gray-100 rounded-lg flex items-center justify-center text-gray-400">
+            <div class="w-full h-40 bg-gray-100 dark:bg-gray-800 rounded-lg
+                        flex items-center justify-center text-gray-400">
               最初のコマを待っています...
             </div>
             {% endif %}
           </a>
         </div>
         {% endfor %}
-        {% else %}
-        <div class="col-span-1 md:col-span-2 text-center p-8 bg-white rounded-xl shadow-md text-gray-500">
-          まだリレーがありません。上のフォームから最初のコマを投稿しましょう！
-        </div>
-        {% endif %}
 
       </div>
     </section>
 
   </div>
-</body>
 
+  <!-- ダークモード切替 JS -->
+  <script>
+    const toggleButton = document.getElementById("theme-toggle");
+    const html = document.documentElement;
+
+    const savedTheme = localStorage.getItem("theme");
+    if (savedTheme === "dark") {
+      html.classList.add("dark");
+      toggleButton.textContent = "☀️";
+    }
+
+    toggleButton.addEventListener("click", () => {
+      html.classList.toggle("dark");
+
+      if (html.classList.contains("dark")) {
+        localStorage.setItem("theme", "dark");
+        toggleButton.textContent = "☀️";
+      } else {
+        localStorage.setItem("theme", "light");
+        toggleButton.textContent = "🌙";
+      }
+    });
+  </script>
+
+</body>
 </html>
