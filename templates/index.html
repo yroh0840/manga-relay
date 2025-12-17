@@ -25,7 +25,7 @@
 
 <body
   class="min-h-screen p-4 md:p-8 transition-colors duration-300
-         bg-gray-100 dark:bg-[#1f1f1f]
+         bg-gray-100 dark:bg-[#232325]
          text-gray-800 dark:text-gray-200">
 
   <div class="max-w-4xl mx-auto">
@@ -54,11 +54,11 @@
     <section
       class="bg-white dark:bg-gray-900
              p-6 rounded-xl shadow-lg mb-10
-             border border-gray-200 dark:border-gray-800">
+             border border-gray-200 dark:border-gray-700">
 
       <h2
         class="text-2xl font-semibold
-               text-gray-800 dark:text-gray-100
+               text-gray-800 dark:text-[#E4EFFF]
                mb-4 border-b pb-2
                border-gray-200 dark:border-gray-700">
         先頭のコマを投稿する
@@ -67,21 +67,21 @@
       <form action="{{ url_for('post_frame') }}" method="POST" enctype="multipart/form-data" class="space-y-4">
 
         <div>
-          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+          <label class="block text-sm font-medium text-gray-700 dark:text-[#B4BFD0] mb-1">
             コマの画像を選択 (PNG/JPG)
           </label>
           <input type="file" name="file" required
-            class="w-full text-sm text-gray-500
+            class="w-full text-sm text-gray-500 
                    file:mr-4 file:py-2 file:px-4
                    file:rounded-full file:border-0
                    file:text-sm file:font-semibold
-                   file:bg-indigo-50 file:text-indigo-700
+                   file:bg-indigo-50 file:dark:bg-[#E4EFFF] file:text-indigo-700
                    hover:file:bg-indigo-100 cursor-pointer">
         </div>
 
         <button type="submit"
           class="w-full py-3 px-4
-                 bg-indigo-600 text-white font-bold rounded-xl
+                 bg-indigo-600 text-white dark:text-[#E4EFFF] font-bold rounded-xl
                  shadow-md hover:bg-indigo-700 transition">
           コマを投稿！
         </button>
@@ -98,7 +98,7 @@
     <section>
       <h2
         class="text-2xl font-semibold
-               text-gray-800 dark:text-gray-100
+               text-gray-800 dark:text-[#E4EFFF]
                mb-4 border-b pb-2
                border-gray-200 dark:border-gray-700">
         進行中のリレー一覧
@@ -116,7 +116,7 @@
           <a href="{{ url_for('comic_detail', comic_id=comic.id) }}" class="block p-4">
 
             <div class="flex justify-between items-start mb-2">
-              <h3 class="text-xl font-bold text-gray-800 dark:text-gray-100 truncate">
+              <h3 class="text-xl font-bold text-gray-800 dark:text-[#E4EFFF] truncate">
                 {{ comic.title }}
               </h3>
               <span class="text-sm font-medium px-3 py-1 rounded-full
