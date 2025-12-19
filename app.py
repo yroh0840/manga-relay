@@ -141,38 +141,20 @@ def index():
         ).count()
     
     return render_template('index.html', comics=comics, db=db, Koma=Koma)
-
-@app.route('/comic/<int:comic_id>')
-def comic_detail(comic_id):
-    comic = Comic.query.get_or_404(comic_id)
-
-    komas = comic.komas.filter_by(
-        is_deleted=0
-    ).order_by(Koma.frame_number.asc()).all()
-
-    koma_count = len(komas) # コマの数
-
-    return render_template(
-        'comic_detail.html', 
-        comic=comic, 
-        komas=komas,
-        koma_count=koma_count
-    )
-
-
-
-@app.route('/admin/list')
-def admin_list():
-    comics = Comic.query.order_by(Comic.started_at.desc()).all()
-    return render_template("admin_list.html", comics=comics, Koma=Koma)
-
+# 
 # --- post ルート (コマの投稿処理) ---
 @app.route('/post', methods=['POST'])
 def post_frame():
     title = request.form.get('title') or '無題の漫画リレー'
+    max_koma = request.form.get("max_koma", type=int)
+
+    # 念のための保険
+    if max_koma is None:
+        max_koma = 20
+
     file = request.files.get('file')
     comic_id_str = request.form.get('comic_id')
-    
+
     try: 
         if not file or file.filename == '':
             return redirect(request.referrer or url_for('index'))
@@ -185,7 +167,7 @@ def post_frame():
         
         # 新規リレー
         if comic_id_str == 'new' or not comic_id_str:
-            comic = Comic(title=title)
+            comic = Comic(title=title, max_koma=max_koma)
             db.session.add(comic)
             db.session.flush()
             comic_id = comic.id
@@ -229,6 +211,30 @@ def post_frame():
     finally:
         db.session.remove()
 
+# コミックのコマのページ
+@app.route('/comic/<int:comic_id>')
+def comic_detail(comic_id):
+    comic = Comic.query.get_or_404(comic_id)
+
+    komas = comic.komas.filter_by(
+        is_deleted=0
+    ).order_by(Koma.frame_number.asc()).all()
+
+    koma_count = len(komas) # コマの数
+
+    return render_template(
+        'comic_detail.html', 
+        comic=comic, 
+        komas=komas,
+        koma_count=koma_count
+    )
+
+
+# 管理ページ
+@app.route('/admin/list')
+def admin_list():
+    comics = Comic.query.order_by(Comic.started_at.desc()).all()
+    return render_template("admin_list.html", comics=comics, Koma=Koma)
 
 
 if __name__ == '__main__':

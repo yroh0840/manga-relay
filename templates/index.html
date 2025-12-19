@@ -74,97 +74,122 @@
                    hover:file:bg-indigo-100 cursor-pointer">
         </div>
 
-        <button type="submit" class="w-full py-3 px-4
-                 bg-indigo-600 text-white dark:text-[#E4EFFF] font-bold rounded-xl
-                 shadow-md hover:bg-indigo-700 transition">
-          コマを投稿！
-        </button>
+
 
         <input type="text" name="title" placeholder="タイトル（任意）" class="w-full p-2 rounded-lg
                  bg-gray-50 dark:bg-gray-800
                  border border-gray-300 dark:border-gray-600
                  text-gray-800 dark:text-gray-100">
+        <div>
+          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+            この漫画のコマ上限
+          </label>
+
+          <select name="max_koma" class="w-full p-2 rounded-lg
+           bg-gray-50 dark:bg-gray-800
+           border border-gray-300 dark:border-gray-700
+           text-gray-800 dark:text-gray-100">
+            <option value="2">2コマ</option>
+            <option value="4">4コマ</option>
+            <option value="5">5コマ</option>
+            <option value="10">10コマ</option>
+            <option value="15">15コマ</option>
+            <option value="20" selected>20コマ</option>
+            <option value="30">30コマ</option>
+          </select>
+
+          <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
+            ※ 上限に達すると、続きを投稿できなくなります（あとから変更可能）
+          </p>
+
+        </div>
+        <button type="submit" class="w-full py-3 px-4
+               bg-indigo-600 text-white dark:text-[#E4EFFF] font-bold rounded-xl
+               shadow-md hover:bg-indigo-700 transition">
+          コマを投稿！
+        </button>
+
       </form>
     </section>
 
     <!-- リレー一覧 -->
-<section>
-  <h2 class="text-2xl font-semibold
+    <section>
+      <h2 class="text-2xl font-semibold
              text-gray-800 dark:text-[#E4EFFF]
              mb-4 border-b pb-2
              border-gray-200 dark:border-gray-700">
-    進行中のリレー一覧
-  </h2>
+        進行中のリレー一覧
+      </h2>
 
-  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
 
-    {% for comic in comics %}
-    <div class="bg-white dark:bg-gray-900
+        {% for comic in comics %}
+        <div class="bg-white dark:bg-gray-900
                 rounded-xl shadow-md overflow-hidden
                 border border-gray-200 dark:border-gray-700
                 transition hover:shadow-xl">
 
-      <a href="{{ url_for('comic_detail', comic_id=comic.id) }}" class="block p-4">
+          <a href="{{ url_for('comic_detail', comic_id=comic.id) }}" class="block p-4">
 
-        <!-- タイトル + 状態 -->
-        <div class="flex justify-between items-start mb-2">
-          <h3 class="text-xl font-bold text-gray-800 dark:text-[#E4EFFF] truncate">
-            {{ comic.title }}
-          </h3>
+            <!-- タイトル + 状態 -->
+            <div class="flex justify-between items-start mb-2">
+              <h3 class="text-xl font-bold text-gray-800 dark:text-[#E4EFFF] truncate">
+                {{ comic.title }}
+              </h3>
 
-          <div class="flex items-center gap-2">
-            <span class="text-sm font-medium px-3 py-1 rounded-full
+              <div class="flex items-center gap-2">
+                <span class="text-sm font-medium px-3 py-1 rounded-full
               {% if comic.koma_count >= comic.max_koma %}
                 bg-gray-400 text-white
               {% else %}
                 bg-green-100 text-green-600 dark:bg-green-950
               {% endif %}
             ">
-              {% if comic.koma_count >= comic.max_koma %}
-                満タン
-              {% else %}
-                進行中
-              {% endif %}
-            </span>
+                  {% if comic.koma_count >= comic.max_koma %}
+                  満タン
+                  {% else %}
+                  進行中
+                  {% endif %}
+                </span>
 
-            <p class="text-sm text-gray-500 dark:text-gray-400">
-              <span class="font-semibold text-indigo-500">
-                {{ comic.koma_count }}
-              </span>
-              / {{ comic.max_koma }}
+                <p class="text-sm text-gray-500 dark:text-gray-400">
+                  <span class="font-semibold text-indigo-500">
+                    {{ comic.koma_count }}
+                  </span>
+                  / {{ comic.max_koma }}
+                </p>
+              </div>
+            </div>
+
+            <!-- 開始日 -->
+            <p class="text-sm text-gray-500 dark:text-gray-400 mb-3">
+              {{ comic.started_at.strftime('%Y/%m/%d') }}
             </p>
-          </div>
-        </div>
 
-        <!-- 開始日 -->
-        <p class="text-sm text-gray-500 dark:text-gray-400 mb-3">
-          {{ comic.started_at.strftime('%Y/%m/%d') }}
-        </p>
+            <!-- 最新コマ -->
+            {% set latest_koma = Koma.query.filter_by(
+            comic_id=comic.id,
+            is_deleted=0
+            ).order_by(Koma.frame_number.desc()).first() %}
 
-        <!-- 最新コマ -->
-        {% set latest_koma = Koma.query.filter_by(
-          comic_id=comic.id,
-          is_deleted=0
-        ).order_by(Koma.frame_number.desc()).first() %}
-
-        {% if latest_koma %}
-        <div class="w-full h-40 bg-gray-100 dark:bg-gray-800 rounded-lg overflow-hidden">
-          <img src="{{ url_for('static', filename='uploads/' ~ latest_koma.image_filename) }}"
-               class="object-cover w-full h-full">
-        </div>
-        {% else %}
-        <div class="w-full h-40 bg-gray-100 dark:bg-gray-800 rounded-lg
+            {% if latest_koma %}
+            <div class="w-full h-40 bg-gray-100 dark:bg-gray-800 rounded-lg overflow-hidden">
+              <img src="{{ url_for('static', filename='uploads/' ~ latest_koma.image_filename) }}"
+                class="object-cover w-full h-full">
+            </div>
+            {% else %}
+            <div class="w-full h-40 bg-gray-100 dark:bg-gray-800 rounded-lg
                     flex items-center justify-center text-gray-400">
-          最初のコマを待っています...
+              最初のコマを待っています...
+            </div>
+            {% endif %}
+
+          </a>
         </div>
-        {% endif %}
+        {% endfor %}
 
-      </a>
-    </div>
-    {% endfor %}
-
-  </div>
-</section>
+      </div>
+    </section>
 
 
   </div>

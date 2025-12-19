@@ -43,21 +43,26 @@
     <!-- 続きを投稿フォーム -->
     <section class="mt-12">
 
-      <h2 class="text-xl font-bold mb-4 text-gray-800 dark:text-gray-100">
+      <h2 class="text-xl font-bold mb-2 text-gray-800 dark:text-gray-100">
         続きを投稿する
       </h2>
+
+      <p class="mb-4 text-sm text-gray-600 dark:text-gray-400">
+        前のコマの続きを、あなたなりに描いてみてください。<br>
+        物語をつなげても、壊しても、脱線してもOKです。
+      </p>
 
       {% set is_full = comic.max_koma is not none and koma_count >= comic.max_koma %}
 
       <div class="
-      rounded-xl p-6 border
-      bg-white
-      border-gray-200
-      transition
-      {% if is_full %}
-        opacity-50 pointer-events-none
-      {% endif %}
-    ">
+    rounded-xl p-6 border
+    bg-white
+    border-gray-200
+    transition
+    {% if is_full %}
+      opacity-50 pointer-events-none
+    {% endif %}
+  ">
 
         <form action="{{ url_for('post_frame') }}" method="POST" enctype="multipart/form-data" class="space-y-4">
           <input type="hidden" name="comic_id" value="{{ comic.id }}">
