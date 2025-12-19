@@ -286,7 +286,7 @@ release/mvp-v1 ブランチを切る
 
 今日やること
 ・feature/komalimit
-　・app comic.max_koma追加　
+　・app comic.max_koma追加　✅
 　・index　max_komaの上限値を選べるフォーム
 　・comic_detail　max_koma以上ー投稿フォーム無効化
 

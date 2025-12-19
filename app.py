@@ -97,7 +97,6 @@ def allowed_file(filename):
 #   return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
 # ---------------------------------------------
 
-# app.py に追加
 @app.route('/admin/comic/<int:comic_id>')
 def admin_comic_detail(comic_id):
     # Comic と関連する Koma を取得
@@ -134,15 +133,33 @@ def delete_koma(koma_id):
 @app.route('/')
 def index():
     comics = Comic.query.filter_by(is_deleted=0).order_by(Comic.started_at.desc()).all()
+    
+    for comic in comics:
+        comic.koma_count = Koma.query.filter_by(
+            comic_id=comic.id,
+            is_deleted=0
+        ).count()
+    
     return render_template('index.html', comics=comics, db=db, Koma=Koma)
 
 @app.route('/comic/<int:comic_id>')
 def comic_detail(comic_id):
     comic = Comic.query.get_or_404(comic_id)
-    if not comic:
-        return "指定された漫画が存在しません。", 404
-    komas = comic.komas.filter_by(is_deleted=0).order_by(Koma.frame_number.asc()).all()
-    return render_template('comic_detail.html', comic=comic, komas=komas)
+
+    komas = comic.komas.filter_by(
+        is_deleted=0
+    ).order_by(Koma.frame_number.asc()).all()
+
+    koma_count = len(komas) # コマの数
+
+    return render_template(
+        'comic_detail.html', 
+        comic=comic, 
+        komas=komas,
+        koma_count=koma_count
+    )
+
+
 
 @app.route('/admin/list')
 def admin_list():
