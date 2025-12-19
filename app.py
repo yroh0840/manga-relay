@@ -5,6 +5,8 @@ from sqlalchemy.pool import NullPool
 import os 
 import uuid
 from datetime import datetime
+from flask_migrate import Migrate
+
 # app.py の先頭に追加して実行
 print("RUNNING FILE:", os.path.abspath(__file__))
 
@@ -42,6 +44,8 @@ db = SQLAlchemy(app)
 # --- フォルダの作成 ---
 if not os.path.exists(app.config['UPLOAD_FOLDER']):
     os.makedirs(app.config['UPLOAD_FOLDER'])
+
+migrate = Migrate(app, db)
 
 # ====================================================================
 # --- データベースモデル ---

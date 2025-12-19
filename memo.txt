@@ -292,3 +292,12 @@ release/mvp-v1 ブランチを切る
 
 ・feature/ui-darklight comic_detail.html
 
+メモ-----
+migrateでカラム追加
+手順
+1.pip install Flask-Migrate
+2.pythonコードに from flask_migrate import Migrate 追加
+3.pythonコードに migrate = Migrate(app, db) 追加
+4.flask db init
+5.flask db migrate -m "説明"
+6.flask db upgrade 実際にDBに適用
