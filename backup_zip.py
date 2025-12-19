@@ -14,7 +14,7 @@ timestamp = datetime.now().strftime("%Y%m%d_%H%M")
 zip_filename = os.path.join(BACKUP_DIR, f"backup_{timestamp}.zip")
 
 # ZIP に追加する対象（venv とバックアップフォルダは除外）
-EXCLUDE_DIRS = {'venv', 'backups', '.git'}
+EXCLUDE_DIRS = {'manga-relay-venv', 'backups', '.git'}
 EXCLUDE_FILES = {'.DS_Store'}
 
 def zipdir(path, ziph):

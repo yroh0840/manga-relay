@@ -51,10 +51,11 @@ class Comic(db.Model):
     __tablename__ = 'comic'
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(100), default='無題の漫画リレー')
-    is_completed = db.Column(db.Boolean, default=False)
     started_at = db.Column(db.DateTime, default=datetime.utcnow)
-    komas = db.relationship('Koma', backref='comic', lazy='dynamic') 
+    is_completed = db.Column(db.Boolean, default=False)
     is_deleted = db.Column(db.Integer, default=0, nullable=False)
+    max_koma = db.Column(db.Integer, default=20)
+    komas = db.relationship('Koma', backref='comic', lazy='dynamic') 
 
 
     def __repr__(self):
