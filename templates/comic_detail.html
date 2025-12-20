@@ -32,7 +32,7 @@
           <img class="w-full" src="{{ url_for('static', filename='uploads/' ~ koma.image_filename) }}" alt="">
 
           <div class="p-2 text-gray-600 text-sm">
-            コマ番号：{{ koma.frame_number }}　
+            コマ番号：{{ koma.frame_number }}
             投稿日：{{ koma.posted_at.strftime('%Y/%m/%d %H:%M') }}
           </div>
         </div>
@@ -41,27 +41,28 @@
     </section>
 
     <!-- 続きを投稿フォーム -->
-    <section class="mt-12">
+    {% set is_full = comic.max_koma is not none and koma_count >= comic.max_koma %}
+    <section class="mt-12
+    {% if is_full %}
+      opacity-50 pointer-events-none
+    {% endif %}
+    ">
 
-      <h2 class="text-xl font-bold mb-2 text-gray-800 dark:text-gray-100">
+      <h2 class="text-xl font-bold mb-2 text-gray-800 dark:text-gray-200">
         続きを投稿する
       </h2>
 
-      <p class="mb-4 text-sm text-gray-600 dark:text-gray-400">
+      <!-- <p class="mb-4 text-sm text-gray-600 dark:text-gray-400">
         前のコマの続きを、あなたなりに描いてみてください。<br>
         物語をつなげても、壊しても、脱線してもOKです。
-      </p>
+      </p> -->
 
-      {% set is_full = comic.max_koma is not none and koma_count >= comic.max_koma %}
 
       <div class="
     rounded-xl p-6 border
     bg-white
     border-gray-200
     transition
-    {% if is_full %}
-      opacity-50 pointer-events-none
-    {% endif %}
   ">
 
         <form action="{{ url_for('post_frame') }}" method="POST" enctype="multipart/form-data" class="space-y-4">

@@ -301,3 +301,23 @@ migrateでカラム追加
 4.flask db init
 5.flask db migrate -m "説明"
 6.flask db upgrade 実際にDBに適用
+
+12/20土曜日
+問題点
+・ダークモードにしていないのに,comic_detailのdarkモード表示になってしまう ※ localstolageをみるとtheme lightになっているのに
+・急に仮想環境内でpython app.pyを実行するとエラーがでてflask_migrateがnot foundになり、migrateに書き直したら次のエラー
+(manga-relay-venv) (base) mbp:MANGA-RELAY yaman$ python app.py
+RUNNING FILE: /Users/yaman/MANGA-RELAY/app.py
+Traceback (most recent call last):
+  File "/Users/yaman/MANGA-RELAY/app.py", line 48, in <module>
+    migrate = Migrate(app, db)
+              ^^^^^^^^^^^^^^^^
+  File "/Users/yaman/MANGA-RELAY/manga-relay-venv/lib/python3.12/site-packages/migrate.py", line 49, in __init__
+    self._migration_path = os.path.abspath(path)
+                           ^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen posixpath>", line 410, in abspath
+TypeError: expected str, bytes or os.PathLike object, not Flask
+(manga-relay-venv) (base) mbp:MANGA-RELAY yaman$ 
+改善点
+・indexのダークモードのままcomic_detailに遷移するとダークモードのまま引き継ぐようにする
+・commic_detailにもindexのダークモード切り替えボタンを表示する
