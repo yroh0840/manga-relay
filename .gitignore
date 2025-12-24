@@ -7,3 +7,5 @@ manga-relay-venv/
 *.sqlite-wal
 *.sqlite-shm
 *.bak
+backups/
+*.zip
