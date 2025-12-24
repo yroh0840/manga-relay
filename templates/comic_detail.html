@@ -1,101 +1,104 @@
-<!DOCTYPE html>
-<html lang="ja">
+{% extends "base.html" %}
+{% block title %}{{ comic.title }}{% endblock %}
 
-<head>
-  <meta charset="UTF-8">
-  <script src="https://cdn.tailwindcss.com"></script>
-  <title>{{ comic.title }} - 詳細</title>
-</head>
+{% block content %}
 
-<body class="bg-gray-100 p-4 md:p-8">
-  <div class="max-w-3xl mx-auto">
+<div class="max-w-3xl mx-auto">
 
-    <!-- ヘッダー -->
-    <header class="mb-6">
-      <h1 class="text-3xl font-bold text-indigo-700">{{ comic.title }}</h1>
-      <p class="text-gray-600">開始日: {{ comic.started_at.strftime('%Y/%m/%d') }}</p>
+  <!-- ヘッダー -->
+  <header class="relative mb-10">
+    <h1 class="text-3xl font-bold text-indigo-700 dark:text-[#C8A5FF]">{{ comic.title }}</h1>
+    <p class="text-gray-600 dark:text-[#ABB6C6]">開始日: {{ comic.started_at.strftime('%Y/%m/%d') }}</p>
 
-      <!-- トップページへ戻る -->
-      <a href="{{ url_for('index') }}"
-        class="inline-block mt-3 px-4 py-2 bg-gray-200 text-gray-700 rounded-lg shadow hover:bg-gray-300">
-        ← トップページへ戻る
-      </a>
-    </header>
+    <!-- トップページへ戻る -->
+    <a href="{{ url_for('index') }}"
+      class="inline-block mt-3 px-4 py-2 bg-gray-300 dark:bg-[#383C40] text-gray-700 dark:text-[#BFC9DD] rounded-lg shadow hover:bg-gray-400">
+      ← トップページへ戻る
+    </a>
+        <!-- ダークモード切替 -->
+    <button id="theme-toggle" class="absolute top-0 right-0
+               p-2 rounded-full
+               bg-gray-200 dark:bg-gray-700
+               text-gray-800 dark:text-gray-200
+               hover:scale-105 transition">
+      🌙
+    </button>
+  </header>
 
-    <!-- コマ一覧 -->
-    <section class="bg-white p-4 rounded-xl shadow mb-6">
-      <h2 class="text-xl font-bold mb-3">これまでのコマ</h2>
+  <!-- コマ一覧 -->
+  <section class="bg-white dark:bg-[#121212] p-4 rounded-xl shadow mb-6">
+    <h2 class="text-xl font-bold mb-3 dark:text-gray-400">これまでのコマ</h2>
 
-      <div class="space-y-6">
-        {% for koma in komas %}
-        <div class="border rounded-lg overflow-hidden bg-gray-50 shadow">
-          <img class="w-full" src="{{ url_for('static', filename='uploads/' ~ koma.image_filename) }}" alt="">
+    <div class="space-y-6">
+      {% for koma in komas %}
+      <div class="border dark:border-[#414143] rounded-lg overflow-hidden bg-gray-50 shadow">
+        <img class="w-full" src="{{ url_for('static', filename='uploads/' ~ koma.image_filename) }}" alt="">
 
-          <div class="p-2 text-gray-600 text-sm">
-            コマ番号：{{ koma.frame_number }}
-            投稿日：{{ koma.posted_at.strftime('%Y/%m/%d %H:%M') }}
-          </div>
+        <div class="p-2 text-gray-600 dark:text-gray-400 text-sm dark:bg-[#1F1F20]">
+          コマ番号：{{ koma.frame_number }}
+          投稿日：{{ koma.posted_at.strftime('%Y/%m/%d %H:%M') }}
         </div>
-        {% endfor %}
       </div>
-    </section>
+      {% endfor %}
+    </div>
+  </section>
 
-    <!-- 続きを投稿フォーム -->
-    {% set is_full = comic.max_koma is not none and koma_count >= comic.max_koma %}
-    <section class="mt-12
+  <!-- 続きを投稿フォーム -->
+  {% set is_full = comic.max_koma is not none and koma_count >= comic.max_koma %}
+  <section class="mt-12
     {% if is_full %}
       opacity-50 pointer-events-none
     {% endif %}
     ">
 
-      <h2 class="text-xl font-bold mb-2 text-gray-800 dark:text-gray-200">
-        続きを投稿する
-      </h2>
+    <h2 class="text-xl font-bold mb-2 text-gray-800 dark:text-gray-200">
+      続きを投稿する
+    </h2>
 
-      <!-- <p class="mb-4 text-sm text-gray-600 dark:text-gray-400">
+    <!-- <p class="mb-4 text-sm text-gray-600 dark:text-gray-400">
         前のコマの続きを、あなたなりに描いてみてください。<br>
         物語をつなげても、壊しても、脱線してもOKです。
       </p> -->
 
 
-      <div class="
+    <div class="
     rounded-xl p-6 border
     bg-white
+    dark:bg-[#121212]
     border-gray-200
+    dark:border-[#414143]
     transition
   ">
 
-        <form action="{{ url_for('post_frame') }}" method="POST" enctype="multipart/form-data" class="space-y-4">
-          <input type="hidden" name="comic_id" value="{{ comic.id }}">
+      <form action="{{ url_for('post_frame') }}" method="POST" enctype="multipart/form-data" class="space-y-4">
+        <input type="hidden" name="comic_id" value="{{ comic.id }}">
 
-          <input type="file" name="file" required class="block w-full text-sm text-gray-500
+        <input type="file" name="file" required class="block w-full text-sm text-gray-500
                file:mr-4 file:py-2 file:px-4
                file:rounded-full file:border-0
                file:text-sm file:font-semibold
-               file:bg-indigo-50 file:text-indigo-700
+               file:bg-indigo-50 dark:file:bg-[#262C3F] file:text-indigo-700 dark:file:text-[#C8A5FF]
                hover:file:bg-indigo-100">
 
-          <button type="submit" class="px-4 py-2 rounded-lg font-semibold
+        <button type="submit" class="px-4 py-2 rounded-lg font-semibold
                bg-indigo-600 text-white
                hover:bg-indigo-700 transition">
-            投稿
-          </button>
+          投稿
+        </button>
 
-        </form>
+      </form>
 
-      </div>
+    </div>
 
-      {% if is_full %}
-      <p class="mt-3 text-sm text-gray-500 text-center">
-        この漫画リレーは現在コマ上限に達しています。<br>
-        続きを投稿したい場合は、作者に上限拡張をリクエストしてください。
-      </p>
-      {% endif %}
+    {% if is_full %}
+    <p class="mt-3 text-sm text-gray-500 text-center">
+      この漫画リレーは現在コマ上限に達しています。<br>
+      続きを投稿したい場合は、作者に上限拡張をリクエストしてください。
+    </p>
+    {% endif %}
 
-    </section>
+  </section>
 
 
-  </div>
-</body>
-
-</html>
+</div>
+{% endblock %}

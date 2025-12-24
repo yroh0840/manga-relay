@@ -1,0 +1,56 @@
+<!-- templates/base.html -->
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}{% endblock %}</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class'
+    }
+  </script>
+
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+    }
+  </style>
+</head>
+
+<body class="min-h-screen p-4 md:p-8 transition-colors duration-300
+         bg-gray-100 dark:bg-[#232325]
+         text-gray-800 dark:text-gray-200">
+
+  {% block content %}{% endblock %}
+
+  <!-- 共通スクリプト -->
+  <script>
+    const html = document.documentElement;
+    const toggleButton = document.getElementById("theme-toggle");
+    const savedTheme = localStorage.getItem("theme");
+
+    if (savedTheme === "dark") {
+      html.classList.add("dark");
+      toggleButton.textContent = "☀️";
+    }
+
+    toggleButton.addEventListener("click", () => {
+      html.classList.toggle("dark");
+
+      if (html.classList.contains("dark")) {
+        localStorage.setItem("theme", "dark");
+        toggleButton.textContent = "☀️";
+      } else {
+        localStorage.setItem("theme", "light");
+        toggleButton.textContent = "🌙";
+      }
+    });
+  </script>
+  {% block scripts %}{% endblock %}
+</body>
+
+</html>

@@ -1,42 +1,18 @@
-<!DOCTYPE html>
-<html lang="ja">
+{% extends "base.html" %}
+{% block title %}漫画リレー{% endblock %}
 
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>漫画リレー - トップページ</title>
+{% block content %}
 
-  <!-- Tailwind CDN -->
-  <script src="https://cdn.tailwindcss.com"></script>
-
-  <!-- ★重要：darkMode を class にする -->
-  <script>
-    tailwind.config = {
-      darkMode: 'class'
-    }
-  </script>
-
-  <style>
-    body {
-      font-family: 'Inter', sans-serif;
-    }
-  </style>
-</head>
-
-<body class="min-h-screen p-4 md:p-8 transition-colors duration-300
-         bg-gray-100 dark:bg-[#232325]
-         text-gray-800 dark:text-gray-200">
-
-  <div class="max-w-4xl mx-auto">
+<div class="max-w-4xl mx-auto">
 
     <!-- ヘッダー -->
     <header class="relative text-center mb-10">
       <h1 class="text-4xl font-extrabold text-indigo-700 dark:text-indigo-400">
         ✍️ 漫画リレー
       </h1>
-      <p class="text-gray-600 dark:text-gray-400 mt-2">
+      <!-- <p class="text-gray-600 dark:text-gray-400 mt-2">
         みんなで一つの物語を紡ごう。
-      </p>
+      </p> -->
 
       <!-- ダークモード切替 -->
       <button id="theme-toggle" class="absolute top-0 right-0
@@ -70,7 +46,7 @@
                    file:mr-4 file:py-2 file:px-4
                    file:rounded-full file:border-0
                    file:text-sm file:font-semibold
-                   file:bg-indigo-50 file:dark:bg-[#E4EFFF] file:text-indigo-700
+                   file:bg-indigo-50 file:dark:bg-gray-300 file:text-indigo-700
                    hover:file:bg-indigo-100 cursor-pointer">
         </div>
 
@@ -78,7 +54,7 @@
 
         <input type="text" name="title" placeholder="タイトル（任意）" class="w-full p-2 rounded-lg
                  bg-gray-50 dark:bg-gray-800
-                 border border-gray-300 dark:border-gray-600
+                 border border-gray-300 dark:border-[#818387]
                  text-gray-800 dark:text-gray-100">
         <div>
           <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
@@ -87,7 +63,7 @@
 
           <select name="max_koma" class="w-full p-2 rounded-lg
            bg-gray-50 dark:bg-gray-800
-           border border-gray-300 dark:border-gray-700
+           border border-gray-300 dark:border-[#818387]
            text-gray-800 dark:text-gray-100">
             <option value="2">2コマ</option>
             <option value="4">4コマ</option>
@@ -194,30 +170,4 @@
 
   </div>
 
-  <!-- ダークモード切替 JS -->
-  <script>
-    const toggleButton = document.getElementById("theme-toggle");
-    const html = document.documentElement;
-
-    const savedTheme = localStorage.getItem("theme");
-    if (savedTheme === "dark") {
-      html.classList.add("dark");
-      toggleButton.textContent = "☀️";
-    }
-
-    toggleButton.addEventListener("click", () => {
-      html.classList.toggle("dark");
-
-      if (html.classList.contains("dark")) {
-        localStorage.setItem("theme", "dark");
-        toggleButton.textContent = "☀️";
-      } else {
-        localStorage.setItem("theme", "light");
-        toggleButton.textContent = "🌙";
-      }
-    });
-  </script>
-
-</body>
-
-</html>
+{% endblock %}

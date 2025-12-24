@@ -306,18 +306,48 @@ migrateでカラム追加
 問題点
 ・ダークモードにしていないのに,comic_detailのdarkモード表示になってしまう ※ localstolageをみるとtheme lightになっているのに
 ・急に仮想環境内でpython app.pyを実行するとエラーがでてflask_migrateがnot foundになり、migrateに書き直したら次のエラー
-(manga-relay-venv) (base) mbp:MANGA-RELAY yaman$ python app.py
-RUNNING FILE: /Users/yaman/MANGA-RELAY/app.py
-Traceback (most recent call last):
-  File "/Users/yaman/MANGA-RELAY/app.py", line 48, in <module>
-    migrate = Migrate(app, db)
-              ^^^^^^^^^^^^^^^^
-  File "/Users/yaman/MANGA-RELAY/manga-relay-venv/lib/python3.12/site-packages/migrate.py", line 49, in __init__
-    self._migration_path = os.path.abspath(path)
-                           ^^^^^^^^^^^^^^^^^^^^^
-  File "<frozen posixpath>", line 410, in abspath
-TypeError: expected str, bytes or os.PathLike object, not Flask
-(manga-relay-venv) (base) mbp:MANGA-RELAY yaman$ 
 改善点
 ・indexのダークモードのままcomic_detailに遷移するとダークモードのまま引き継ぐようにする
 ・commic_detailにもindexのダークモード切り替えボタンを表示する
+
+おそらく仮想環境を変えてしまい、flask_migrateがインストールされていないことになりエラー
+それは直した。
+comiclimitはコンプリートし、コミットと、developにマージをした
+明日は、base.htmlを作り、そこにdarkを使えるようにし、indexとcomc_detailのコードをそれようにチェンジするのだ。
+
+明日のやること
+・base.htmlを作成し、| ダークモードができるようにし、indexとcomic_detailでつかえるようにする
+・indexを編集
+・comic_detailを編集
+
+12/21日曜日
+base.htmlをAIに完成コードを作ってもらった貼り付けた問題箇所
+・indexに戻るボタンが消えている
+・ヘッダーのタイトル表示が変わっている
+・ダークモードボタンが端っこに移動している
+・ページの最下部に隙間がなくなっている
+
+進捗
+・base index comic_detailを beseでscriptでダークモードやbody内をconteinsで表示するように変えた
+　しかし、comic_detailのヘッダーはタイトルを表示しないようにしていたため、ヘッダーの統一されていないため、
+　ヘッダーはbaseで統一することはできないことが判明
+明日は、baseに変えてから
+・darkボタンが効かなくなった
+・comic_detailのdarkボタン表示が端によっているのをindexと同じ位置に調節する
+まだ、feature/ui-darklightにいる
+
+12/22月
+✅ダークモードを効かせる
+✅comic_detailのダークモードボタン位置調整
+カラーの調整中
+コミットしていない
+現在feature/ui-darklightのまま
+
+明日
+comic_detailのダークモードを今のchromeブラウザのようにして納得しよう
+
+12/23火
+✅comic_detailのダークモードをchromeと同じにする
+
+12/24水
+・
