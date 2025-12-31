@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="max-w-xl mx-auto mt-10 p-6
+            bg-white dark:bg-gray-900
+            border border-gray-200 dark:border-gray-700
+            rounded-xl shadow">
+
+  <h1 class="text-xl font-bold mb-4 text-gray-800 dark:text-gray-100">
+    管理者にDM
+  </h1>
+
+  <p class="text-sm text-gray-500 dark:text-gray-400 mb-6">
+    このサービスについてのご意見・不具合・要望などを気軽に送ってください。
+    内容は管理者のみが確認します。
+  </p>
+
+  <form method="POST" class="space-y-4">
+
+    <select name="category"
+      class="w-full p-2 border rounded
+             bg-gray-50 dark:bg-gray-800
+             text-gray-800 dark:text-gray-100">
+      <option value="要望">要望</option>
+      <option value="不具合">不具合</option>
+      <option value="クレーム">クレーム</option>
+      <option value="その他">その他</option>
+    </select>
+
+    <textarea name="message" rows="5" required
+      placeholder="自由に書いてください"
+      class="w-full p-2 border rounded
+             bg-gray-50 dark:bg-gray-800
+             text-gray-800 dark:text-gray-100"></textarea>
+
+    <label class="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
+      <input type="checkbox" name="wants_reply">
+      返信求む（時間があるときでOK）
+    </label>
+
+    <button type="submit"
+      class="w-full py-2 bg-indigo-600 text-white rounded
+             hover:bg-indigo-700 transition">
+      送信
+    </button>
+
+  </form>
+</div>
+{% endblock %}

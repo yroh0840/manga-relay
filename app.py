@@ -1,3 +1,5 @@
+
+
 from flask import Flask, render_template, request, redirect, url_for, send_from_directory, flash
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import func, desc 
@@ -40,6 +42,7 @@ ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
 
 # --- データベースの初期化 ---
 db = SQLAlchemy(app)
+# from models import AdminDM
 
 # --- フォルダの作成 ---
 if not os.path.exists(app.config['UPLOAD_FOLDER']):
@@ -76,6 +79,15 @@ class Koma(db.Model):
 
     def __repr__(self):
         return f'<Koma {self.id} (Comic:{self.comic_id}, Seq:{self.frame_number})>'
+
+class AdminDM(db.Model):
+    __tablename__ = 'admin_dm'
+
+    id = db.Column(db.Integer, primary_key=True)
+    category = db.Column(db.String(50))  # 要望 / 不具合 / クレーム / その他
+    message = db.Column(db.Text, nullable=False)
+    wants_reply = db.Column(db.Boolean, default=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
     
 with app.app_context():
     # 接続を取得して PRAGMA を実行
@@ -127,6 +139,30 @@ def delete_koma(koma_id):
     return redirect(url_for('admin_list'))
 
 # ----------
+
+@app.route("/dm", methods=["GET", "POST"])
+def admin_dm():
+    if request.method == "POST":
+        category = request.form.get("category")
+        message = request.form.get("message")
+        wants_reply = True if request.form.get("wants_reply") else False
+
+        if not message:
+            flash("内容を入力してください", "error")
+            return redirect(url_for("admin_dm"))
+
+        dm = AdminDM(
+            category=category,
+            message=message,
+            wants_reply=wants_reply
+        )
+        db.session.add(dm)
+        db.session.commit()
+
+        flash("送信しました。ありがとう！", "success")
+        return redirect(url_for("admin_dm"))
+
+    return render_template("admin_dm.html", hide_dm_link=True)
 
 
 # --- index ルート (一覧表示と投稿フォーム) ---

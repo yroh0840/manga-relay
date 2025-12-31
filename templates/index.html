@@ -5,169 +5,180 @@
 
 <div class="max-w-4xl mx-auto">
 
-    <!-- ヘッダー -->
-    <header class="relative text-center mb-10">
-      <h1 class="text-4xl font-extrabold text-indigo-700 dark:text-indigo-400">
-        ✍️ 漫画リレー
-      </h1>
-      <!-- <p class="text-gray-600 dark:text-gray-400 mt-2">
-        みんなで一つの物語を紡ごう。
-      </p> -->
+  <!-- ヘッダー -->
+  <header class="relative flex items-center mb-10">
+    <!-- 左端：管理者にDM -->
+    <div class="flex items-center">
+      <a href="{{ url_for('admin_dm') }}"
+        class="inline-flex items-center gap-1 text-sm text-gray-500 hover:text-indigo-600">
+        管理者にDM
+        <span>📩</span>
+      </a>
+    </div>
 
-      <!-- ダークモード切替 -->
-      <button id="theme-toggle" class="absolute top-0 right-0
-               p-2 rounded-full
-               bg-gray-200 dark:bg-gray-700
-               text-gray-800 dark:text-gray-200
-               hover:scale-105 transition">
-        🌙
-      </button>
-    </header>
+    <!-- 中央：タイトル（flex-1 + 中央寄せ） -->
+    <h1 class="flex-1 text-center text-4xl font-extrabold text-indigo-700 dark:text-indigo-400">
+      ✍️ 漫画リレー
+    </h1>
 
-    <!-- 投稿エリア -->
-    <section class="bg-white dark:bg-gray-900
+    <!-- 右端を埋めるダミー領域（幅合わせ用） -->
+    <div class="w-10"></div>
+
+    <!-- 右上：ダークモード切替は absolute のまま -->
+    <button id="theme-toggle" class="absolute top-0 right-0
+             p-2 rounded-full
+             bg-gray-200 dark:bg-gray-700
+             text-gray-800 dark:text-gray-200
+             hover:scale-105 transition">
+      🌙
+    </button>
+  </header>
+
+
+  <!-- 投稿エリア -->
+  <section class="bg-white dark:bg-gray-900
              p-6 rounded-xl shadow-lg mb-10
              border border-gray-200 dark:border-gray-700">
 
-      <h2 class="text-2xl font-semibold
+    <h2 class="text-2xl font-semibold
                text-gray-800 dark:text-[#E4EFFF]
                mb-4 border-b pb-2
                border-gray-200 dark:border-gray-700">
-        先頭のコマを投稿する
-      </h2>
+      先頭のコマを投稿する
+    </h2>
 
-      <form action="{{ url_for('post_frame') }}" method="POST" enctype="multipart/form-data" class="space-y-4">
+    <form action="{{ url_for('post_frame') }}" method="POST" enctype="multipart/form-data" class="space-y-4">
 
-        <div>
-          <label class="block text-sm font-medium text-gray-700 dark:text-[#B4BFD0] mb-1">
-            コマの画像を選択 (PNG/JPG)
-          </label>
-          <input type="file" name="file" required class="w-full text-sm text-gray-500 
+      <div>
+        <label class="block text-sm font-medium text-gray-700 dark:text-[#B4BFD0] mb-1">
+          コマの画像を選択 (PNG/JPG)
+        </label>
+        <input type="file" name="file" required class="w-full text-sm text-gray-500 
                    file:mr-4 file:py-2 file:px-4
                    file:rounded-full file:border-0
                    file:text-sm file:font-semibold
                    file:bg-indigo-50 file:dark:bg-gray-300 file:text-indigo-700
                    hover:file:bg-indigo-100 cursor-pointer">
-        </div>
+      </div>
 
 
 
-        <input type="text" name="title" placeholder="タイトル（任意）" class="w-full p-2 rounded-lg
+      <input type="text" name="title" placeholder="タイトル（任意）" class="w-full p-2 rounded-lg
                  bg-gray-50 dark:bg-gray-800
                  border border-gray-300 dark:border-[#818387]
                  text-gray-800 dark:text-gray-100">
-        <div>
-          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-            この漫画のコマ上限
-          </label>
+      <div>
+        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+          この漫画のコマ上限
+        </label>
 
-          <select name="max_koma" class="w-full p-2 rounded-lg
+        <select name="max_koma" class="w-full p-2 rounded-lg
            bg-gray-50 dark:bg-gray-800
            border border-gray-300 dark:border-[#818387]
            text-gray-800 dark:text-gray-100">
-            <option value="2">2コマ</option>
-            <option value="4">4コマ</option>
-            <option value="5">5コマ</option>
-            <option value="10">10コマ</option>
-            <option value="15">15コマ</option>
-            <option value="20" selected>20コマ</option>
-            <option value="30">30コマ</option>
-          </select>
+          <option value="2">2コマ</option>
+          <option value="4">4コマ</option>
+          <option value="5">5コマ</option>
+          <option value="10">10コマ</option>
+          <option value="15">15コマ</option>
+          <option value="20" selected>20コマ</option>
+          <option value="30">30コマ</option>
+        </select>
 
-          <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
-            ※ 上限に達すると、続きを投稿できなくなります（あとから変更可能）
-          </p>
+        <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
+          ※ 上限に達すると、続きを投稿できなくなります（あとから変更可能）
+        </p>
 
-        </div>
-        <button type="submit" class="w-full py-3 px-4
+      </div>
+      <button type="submit" class="w-full py-3 px-4
                bg-indigo-600 text-white dark:text-[#E4EFFF] font-bold rounded-xl
                shadow-md hover:bg-indigo-700 transition">
-          コマを投稿！
-        </button>
+        コマを投稿！
+      </button>
 
-      </form>
-    </section>
+    </form>
+  </section>
 
-    <!-- リレー一覧 -->
-    <section>
-      <h2 class="text-2xl font-semibold
+  <!-- リレー一覧 -->
+  <section>
+    <h2 class="text-2xl font-semibold
              text-gray-800 dark:text-[#E4EFFF]
              mb-4 border-b pb-2
              border-gray-200 dark:border-gray-700">
-        進行中のリレー一覧
-      </h2>
+      進行中のリレー一覧
+    </h2>
 
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
 
-        {% for comic in comics %}
-        <div class="bg-white dark:bg-gray-900
+      {% for comic in comics %}
+      <div class="bg-white dark:bg-gray-900
                 rounded-xl shadow-md overflow-hidden
                 border border-gray-200 dark:border-gray-700
                 transition hover:shadow-xl">
 
-          <a href="{{ url_for('comic_detail', comic_id=comic.id) }}" class="block p-4">
+        <a href="{{ url_for('comic_detail', comic_id=comic.id) }}" class="block p-4">
 
-            <!-- タイトル + 状態 -->
-            <div class="flex justify-between items-start mb-2">
-              <h3 class="text-xl font-bold text-gray-800 dark:text-[#E4EFFF] truncate">
-                {{ comic.title }}
-              </h3>
+          <!-- タイトル + 状態 -->
+          <div class="flex justify-between items-start mb-2">
+            <h3 class="text-xl font-bold text-gray-800 dark:text-[#E4EFFF] truncate">
+              {{ comic.title }}
+            </h3>
 
-              <div class="flex items-center gap-2">
-                <span class="text-sm font-medium px-3 py-1 rounded-full
+            <div class="flex items-center gap-2">
+              <span class="text-sm font-medium px-3 py-1 rounded-full
               {% if comic.koma_count >= comic.max_koma %}
                 bg-gray-400 text-white
               {% else %}
                 bg-green-100 text-green-600 dark:bg-green-950
               {% endif %}
             ">
-                  {% if comic.koma_count >= comic.max_koma %}
-                  満タン
-                  {% else %}
-                  進行中
-                  {% endif %}
+                {% if comic.koma_count >= comic.max_koma %}
+                満タン
+                {% else %}
+                進行中
+                {% endif %}
+              </span>
+
+              <p class="text-sm text-gray-500 dark:text-gray-400">
+                <span class="font-semibold text-indigo-500">
+                  {{ comic.koma_count }}
                 </span>
-
-                <p class="text-sm text-gray-500 dark:text-gray-400">
-                  <span class="font-semibold text-indigo-500">
-                    {{ comic.koma_count }}
-                  </span>
-                  / {{ comic.max_koma }}
-                </p>
-              </div>
+                / {{ comic.max_koma }}
+              </p>
             </div>
+          </div>
 
-            <!-- 開始日 -->
-            <p class="text-sm text-gray-500 dark:text-gray-400 mb-3">
-              {{ comic.started_at.strftime('%Y/%m/%d') }}
-            </p>
+          <!-- 開始日 -->
+          <p class="text-sm text-gray-500 dark:text-gray-400 mb-3">
+            {{ comic.started_at.strftime('%Y/%m/%d') }}
+          </p>
 
-            <!-- 最新コマ -->
-            {% set latest_koma = Koma.query.filter_by(
-            comic_id=comic.id,
-            is_deleted=0
-            ).order_by(Koma.frame_number.desc()).first() %}
+          <!-- 最新コマ -->
+          {% set latest_koma = Koma.query.filter_by(
+          comic_id=comic.id,
+          is_deleted=0
+          ).order_by(Koma.frame_number.desc()).first() %}
 
-            {% if latest_koma %}
-            <div class="w-full h-40 bg-gray-100 dark:bg-gray-800 rounded-lg overflow-hidden">
-              <img src="{{ url_for('static', filename='uploads/' ~ latest_koma.image_filename) }}"
-                class="object-cover w-full h-full">
-            </div>
-            {% else %}
-            <div class="w-full h-40 bg-gray-100 dark:bg-gray-800 rounded-lg
+          {% if latest_koma %}
+          <div class="w-full h-40 bg-gray-100 dark:bg-gray-800 rounded-lg overflow-hidden">
+            <img src="{{ url_for('static', filename='uploads/' ~ latest_koma.image_filename) }}"
+              class="object-cover w-full h-full">
+          </div>
+          {% else %}
+          <div class="w-full h-40 bg-gray-100 dark:bg-gray-800 rounded-lg
                     flex items-center justify-center text-gray-400">
-              最初のコマを待っています...
-            </div>
-            {% endif %}
+            最初のコマを待っています...
+          </div>
+          {% endif %}
 
-          </a>
-        </div>
-        {% endfor %}
-
+        </a>
       </div>
-    </section>
+      {% endfor %}
+
+    </div>
+  </section>
 
 
-  </div>
+</div>
 
 {% endblock %}
