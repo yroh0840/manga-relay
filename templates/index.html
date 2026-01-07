@@ -5,34 +5,38 @@
 
 <div class="max-w-4xl mx-auto">
 
-  <!-- ヘッダー -->
-  <header class="relative flex items-center mb-10">
-    <!-- 左端：管理者にDM -->
-    <div class="flex items-center">
+  <header class="relative mb-10">
+
+    <!-- 右上操作エリア -->
+    <div class="absolute top-4 right-4 flex items-center gap-3">
+
       <a href="{{ url_for('admin_dm') }}"
-        class="inline-flex items-center gap-1 text-sm text-gray-500 hover:text-indigo-600">
-        管理者にDM
+        class="inline-flex items-center gap-1 text-sm text-gray-500 hover:text-indigo-600 fixed top-4 right-4 z-50
+     md:static md:z-auto">
+        管理者メッセージ
         <span>📩</span>
       </a>
+
+      <button id="theme-toggle" class="p-2 rounded-full
+             bg-gray-200 dark:bg-gray-700
+             text-gray-800 dark:text-gray-200">
+        🌙
+      </button>
     </div>
 
-    <!-- 中央：タイトル（flex-1 + 中央寄せ） -->
-    <h1 class="flex-1 text-center text-4xl font-extrabold text-indigo-700 dark:text-indigo-400">
-      ✍️ 漫画リレー
-    </h1>
+    <!-- タイトル（完全中央） -->
+    <div class="text-center">
+      <h1 class="text-3xl md:text-4xl font-extrabold
+               text-indigo-700 dark:text-indigo-400">
+        ✍️ 漫画リレー
+      </h1>
+      <!-- <p class="mt-2 text-gray-600 dark:text-gray-400">
+        みんなで一つの物語を紡ごう。
+      </p> -->
+    </div>
 
-    <!-- 右端を埋めるダミー領域（幅合わせ用） -->
-    <div class="w-10"></div>
-
-    <!-- 右上：ダークモード切替は absolute のまま -->
-    <button id="theme-toggle" class="absolute top-0 right-0
-             p-2 rounded-full
-             bg-gray-200 dark:bg-gray-700
-             text-gray-800 dark:text-gray-200
-             hover:scale-105 transition">
-      🌙
-    </button>
   </header>
+
 
 
   <!-- 投稿エリア -->
