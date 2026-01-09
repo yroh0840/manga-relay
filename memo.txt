@@ -399,4 +399,32 @@ AIの文章を読み、dbの編集
 ・レスポンシブ対応
 　・indexのDMリンクを変える
 　・DMページのありがとうの　あ　から改行させよ
-・comic_detail.htmlの続きの投稿フォームの”ファイルの選択にあわせるとカーソル
+✅comic_detail.htmlの続きの投稿フォームの”ファイルの選択にあわせるとカーソル
+
+次回
+・AIの書いてる通りにやる
+
+1/8木曜日
+公開コメント機能追加
+✅DB設計 app.py terminal
+✅ルーティング app.py
+✅テンプレート追加 base.html
+・公開コメント表示　base.html
+　・管理者返信の仕方
+　（ flask shell
+     c = PublicComment.query.get(1)
+     c.admin_reply = "スマホ対応しました！"
+     db.session.commit()
+  )
+
+次回
+・公開コメント表示　base.html.footer
+　・コメント成功メッセージを一定時間経過すると閉じるようにする
+　・コメントのレイアウト整える
+AI文を読め
+
+1/9金曜日
+git stash案件
+　☑️indexのheaderのスマホサイズだけ、メールアイコンを改行させセンターに配置
+✅コメント投稿ありがとう表示をふわっと消す
+✅フッターコメントを整える

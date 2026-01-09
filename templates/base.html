@@ -27,10 +27,14 @@
 
   {% with messages = get_flashed_messages(with_categories=true) %}
   {% if messages %}
-  <div class="fixed top-4 left-1/2 -translate-x-1/2 z-50 space-y-2">
+  <div class="fixed top-4 left-1/2 -translate-x-1/2 z-50 w-full px-4">
     {% for category, message in messages %}
-    <div class="
-          px-4 py-2 rounded-lg shadow
+    <div id="flash-message" class="
+          mx-auto max-w-sm
+          px-4 py-3 rounded-xl shadow-lg
+          text-center
+          whitespace-normal break-words
+          transition-all duration-500
           {% if category == 'success' %}
             bg-green-600 text-white
           {% elif category == 'error' %}
@@ -46,7 +50,15 @@
   {% endif %}
   {% endwith %}
 
-
+  <script>
+    setTimeout(() => {
+      const el = document.getElementById('flash-message');
+      if (el) {
+        el.classList.add("opacity-0", "translate-y-[-10px]");
+        setTimeout(() => el.remove(), 700);
+      }
+    }, 2000); // 2.5秒後に消える
+  </script>
   {% block content %}{% endblock %}
 
   <!-- 共通スクリプト -->
@@ -73,23 +85,128 @@
     });
   </script>
   {% block scripts %}{% endblock %}
-  <footer class="max-w-4xl h-20 mx-auto mt-6 pd-8 text-center">
+  <footer class="max-w-4xl mx-auto mt-16 px-4 text-center">
+
     {% if not hide_dm_link %}
-    <div class="flex items-center">
-      <a href="{{ url_for('admin_dm') }}"
-        class="inline-flex items-center gap-1 text-sm text-gray-500 hover:text-indigo-600">
-        管理者にDM
-        <span>📩</span>
-      </a>
+
+    <!-- ===============================
+       コメント投稿エリア
+  =============================== -->
+    <div class="border-t pt-10 pb-6">
+
+      <div class="max-w-xl mx-auto">
+
+        <h3 class="text-lg font-bold mb-3 text-gray-800 dark:text-gray-100">
+          このサイトについてひとこと
+        </h3>
+
+        <form action="{{ url_for('footer_comment') }}" method="POST" class="space-y-3">
+
+          <textarea name="message" rows="3" required placeholder="感想やアイデアなど、気軽にどうぞ" class="w-full p-3 rounded-lg border
+                 bg-gray-50 dark:bg-gray-800
+                 text-gray-800 dark:text-gray-100
+                 border-gray-300 dark:border-gray-700
+                 focus:outline-none focus:ring-2 focus:ring-indigo-500"></textarea>
+
+          <label class="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
+            <input type="checkbox" name="is_public" checked>
+            公開してもOK
+          </label>
+
+          <button type="submit" class="px-4 py-2 rounded-lg bg-indigo-600 text-white
+                 hover:bg-indigo-700 transition">
+            送信
+          </button>
+
+          <p class="text-xs text-gray-400 leading-relaxed">
+            ※ 匿名で投稿できます。<br>
+            ※ この欄はサイトについての感想やアイデア用です。<br>
+            <!-- ※ 不具合の報告や個別の相談は管理者DMをご利用ください。 -->
+          </p>
+
+        </form>
+
+        <!-- 管理者DMリンク -->
+        <div class="mt-4">
+          <a href="{{ url_for('admin_dm') }}" class="inline-flex items-center gap-1 text-sm
+                  text-gray-500 hover:text-indigo-600 transition">
+            不具合の報告や個別の相談はこちら → 管理者へDM
+            <span>📩</span>
+          </a>
+        </div>
+
+      </div>
     </div>
+
+    <!-- ===============================
+       公開コメント一覧
+  =============================== -->
+    <div class="mt-12 max-w-xl mx-auto space-y-6">
+
+      <h4 class="text-md font-semibold text-gray-700 dark:text-gray-300">
+        みんなのひとこと
+      </h4>
+
+      {% if public_comments %}
+      {% for c in public_comments %}
+      <div class="
+        p-4 rounded-xl
+        bg-white dark:bg-gray-900
+        border border-gray-200 dark:border-gray-700
+        shadow-sm
+        space-y-2
+      ">
+
+        <!-- コメント本文 -->
+        <p class="text-sm text-gray-800 dark:text-gray-100 leading-relaxed">
+          {{ c.message }}
+        </p>
+
+        <!-- 管理者返信 -->
+        {% if c.admin_reply %}
+        <div class="
+          mt-3 pl-3 border-l-4 border-indigo-400
+          text-xs text-gray-600 dark:text-gray-400
+        ">
+          <span class="font-semibold text-indigo-500">
+            管理者より
+          </span><br>
+          {{ c.admin_reply }}
+        </div>
+        {% endif %}
+
+        <!-- 投稿日時 -->
+        <div class="text-xs text-gray-400 text-right">
+          {{ c.created_at.strftime('%Y/%m/%d') }}
+        </div>
+
+      </div>
+      {% endfor %}
+      {% else %}
+      <p class="text-sm text-gray-400">
+        まだコメントはありません。
+      </p>
+      {% endif %}
+
+    </div>
+
     {% else %}
-    <!-- トップページへ戻る -->
-    <a href="{{ url_for('index') }}"
-      class="inline-block mt-3 px-4 py-2 bg-gray-300 dark:bg-[#383C40] text-gray-700 dark:text-[#BFC9DD] rounded-lg shadow hover:bg-gray-400">
+
+    <!-- ===============================
+       DMページなどから戻る用
+  =============================== -->
+    <a href="{{ url_for('index') }}" class="inline-block mt-6 px-4 py-2
+            bg-gray-300 dark:bg-[#383C40]
+            text-gray-700 dark:text-[#BFC9DD]
+            rounded-lg shadow
+            hover:bg-gray-400 transition">
       ← トップページへ戻る
     </a>
+
     {% endif %}
+
   </footer>
+
 </body>
 
 </html>

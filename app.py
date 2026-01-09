@@ -88,6 +88,15 @@ class AdminDM(db.Model):
     message = db.Column(db.Text, nullable=False)
     wants_reply = db.Column(db.Boolean, default=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+class PublicComment(db.Model):
+    __tablename__ = "public_comment"
+    id = db.Column(db.Integer, primary_key=True)
+    message = db.Column(db.Text, nullable=False)
+    is_public = db.Column(db.Boolean, default=True)  # 公開 or 非公開
+    # 管理者からの一言返信（任意）
+    admin_reply = db.Column(db.Text)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
     
 with app.app_context():
     # 接続を取得して PRAGMA を実行
@@ -246,6 +255,39 @@ def post_frame():
 
     finally:
         db.session.remove()
+
+# フッターに配置する公開用コメント
+@app.route("/footer-comment", methods=["POST"])
+def footer_comment():
+    message = request.form.get("message")
+    is_public = True if request.form.get("is_public") else False
+
+    if not message:
+        flash("内容を入力してください", "error")
+        return redirect(request.referrer or url_for("index"))
+
+    comment = PublicComment(
+        message=message,
+        is_public=is_public
+    )
+    db.session.add(comment)
+    db.session.commit()
+
+    flash("送信しました。ありがとう！", "success")
+    return redirect(request.referrer or url_for("index"))
+# すべてのテンプレートのbase.html用に一括できる
+@app.context_processor
+def inject_public_comments():
+    comments = (
+        PublicComment.query
+        .filter_by(is_public=True)
+        .order_by(PublicComment.created_at.desc())
+        .limit(5)
+        .all()
+    )
+    return dict(public_comments=comments)
+
+
 
 # コミックのコマのページ
 @app.route('/comic/<int:comic_id>')
