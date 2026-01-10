@@ -8,9 +8,11 @@ import os
 import uuid
 from datetime import datetime
 from flask_migrate import Migrate
+from functools import wraps # Basic認証用 
+from flask import nResponse # Basic認証用 
 
 # app.py の先頭に追加して実行
-print("RUNNING FILE:", os.path.abspath(__file__))
+# print("RUNNING FILE:", os.path.abspath(__file__))
 
 
 # --- アプリケーションの初期化 ---
@@ -37,9 +39,13 @@ app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
 }
 app.config['DEBUG'] = True
 
-
+# 環境変数
+# 受け入れる画像の拡張子
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
-
+# basic認証で管理画面を開く--
+ADMIN_USER = os.environ.get("ADMIN_USER", "admin") 
+ADMIN_PASS = os.environ.get("ADMIN_PASS", "devpassword")
+# -----------------------
 # --- データベースの初期化 ---
 db = SQLAlchemy(app)
 # from models import AdminDM
@@ -107,10 +113,34 @@ with app.app_context():
 # ====================================================================
 # --- ヘルパー関数とルート ---
 # ====================================================================
+# basic認証用
+def basic_auth_required(username, password):
+    def decorator(f):
+        @wraps(f)
+        def wrapped(*args, **kwargs):
+            auth = request.authorization
+            if not auth or auth.username != username or auth.password != password:
+                return Response(
+                    "Unauthorized", 401,
+                    {"WWW-Authenticate": 'Basic realm="Admin Area"'}
+                )
+            return f(*args, **kwargs)
+        return wrapped
+    return decorator
+
 
 def allowed_file(filename):
   return '.' in filename and \
     filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS 
+
+
+# 管理ページ
+@app.route('/admin/list')
+@basic_auth_required(ADMIN_USER, ADMIN_PASS) # basic認証 これでURLを知っていてもユーザー名とパスが必要
+def admin_list():
+    comics = Comic.query.order_by(Comic.started_at.desc()).all()
+    return render_template("admin_list.html", comics=comics, Koma=Koma)
+
 
 # for_url()で画像表示しているため不要となった-------
 # @app.route('/uploads/<path:filename>')
@@ -306,14 +336,6 @@ def comic_detail(comic_id):
         komas=komas,
         koma_count=koma_count
     )
-
-
-# 管理ページ
-@app.route('/admin/list')
-def admin_list():
-    comics = Comic.query.order_by(Comic.started_at.desc()).all()
-    return render_template("admin_list.html", comics=comics, Koma=Koma)
-
 
 if __name__ == '__main__':
   # debug=False, threaded=Falseを維持
