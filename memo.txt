@@ -435,3 +435,11 @@ git stash案件
 
 developで管理者ページに入るためのユーザー名とパスワードを決めるところで終了
 basic認証を使うためのモジュールのインポートと関数と環境変数を追加した。
+commitもした。
+
+次回はユーザー名とパスを決めてローカルで挙動チェックしてから、herokuに投稿できるまでするぜ
+
+1/13
+export ADMIN_USER=admin
+export ADMIN_PASS=devpassword
+

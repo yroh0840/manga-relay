@@ -9,7 +9,7 @@ import uuid
 from datetime import datetime
 from flask_migrate import Migrate
 from functools import wraps # Basic認証用 
-from flask import nResponse # Basic認証用 
+from flask import Response # Basic認証用 
 
 # app.py の先頭に追加して実行
 # print("RUNNING FILE:", os.path.abspath(__file__))
@@ -17,7 +17,7 @@ from flask import nResponse # Basic認証用
 
 # --- アプリケーションの初期化 ---
 app = Flask(__name__)
-app.secret_key = "任意のシークレットキー"
+app.secret_key = os.environ.get("SECRET_KEY", "dev-secret")
 
 # ★★★ DBパス設定の絶対パス化 ★★★
 basedir = os.path.abspath(os.path.dirname(__file__))
@@ -43,8 +43,8 @@ app.config['DEBUG'] = True
 # 受け入れる画像の拡張子
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
 # basic認証で管理画面を開く--
-ADMIN_USER = os.environ.get("ADMIN_USER", "admin") 
-ADMIN_PASS = os.environ.get("ADMIN_PASS", "devpassword")
+ADMIN_USER = os.environ.get("ADMIN_USER") 
+ADMIN_PASS = os.environ.get("ADMIN_PASS")
 # -----------------------
 # --- データベースの初期化 ---
 db = SQLAlchemy(app)
@@ -149,6 +149,7 @@ def admin_list():
 # ---------------------------------------------
 
 @app.route('/admin/comic/<int:comic_id>')
+@basic_auth_required(ADMIN_USER, ADMIN_PASS)
 def admin_comic_detail(comic_id):
     # Comic と関連する Koma を取得
     comic = Comic.query.get_or_404(comic_id)
@@ -158,6 +159,7 @@ def admin_comic_detail(comic_id):
 
 # 削除-----------
 @app.route('/admin/delete/comic/<int:comic_id>', methods=['POST'])
+@basic_auth_required(ADMIN_USER, ADMIN_PASS)
 def delete_comic(comic_id):
     comic = Comic.query.get_or_404(comic_id)
     # コミックの is_deleted を ON にする
@@ -166,15 +168,16 @@ def delete_comic(comic_id):
     for koma in comic.komas:
         koma.is_deleted = 1
     db.session.commit()
-    flash(f'コミック "{comic.title}" をソフトデリートしました。', 'success')
+    # flash(f'コミック "{comic.title}" をソフトデリートしました。', 'success')
     return redirect(url_for('admin_list'))
 
 @app.route('/admin/delete/koma/<int:koma_id>', methods=['POST'])
+@basic_auth_required(ADMIN_USER, ADMIN_PASS)
 def delete_koma(koma_id):
     koma = Koma.query.get_or_404(koma_id)
     koma.is_deleted = 1
     db.session.commit()
-    flash(f'コマ {koma.frame_number} を削除（ソフトデリート）しました。', 'success')
+    # flash(f'コマ {koma.frame_number} を削除（ソフトデリート）しました。', 'success')
     return redirect(url_for('admin_list'))
 
 # ----------
@@ -339,5 +342,7 @@ def comic_detail(comic_id):
 
 if __name__ == '__main__':
   # debug=False, threaded=Falseを維持
-  app.run(threaded=False)
+    with app.app_context():
+        db.create_all()
+    app.run(threaded=False)
 
