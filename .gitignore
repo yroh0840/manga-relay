@@ -10,3 +10,5 @@ manga-relay-venv/
 backups/
 *.zip
 .env
+pass.txt
+pass2.txt
