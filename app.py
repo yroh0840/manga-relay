@@ -39,12 +39,13 @@ app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
 # 2. アップロードフォルダの設定
 app.config['UPLOAD_FOLDER'] = os.path.join(basedir, 'static', 'uploads')
-app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
-    "connect_args": {
-        "check_same_thread": False
-    },
-    "poolclass": NullPool,
-}
+# sqlite用であり、postgresには使えないエラーになる
+# app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
+#     "connect_args": {
+#         "check_same_thread": False
+#     },
+#     "poolclass": NullPool,
+# }
 app.config['DEBUG'] = True
 
 # 環境変数
