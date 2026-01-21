@@ -30,8 +30,10 @@ app.instance_path = basedir
 # app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{db_path}' 
 # app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
+# DB設定
 DATABASE_URL = os.environ.get("DATABASE_URL")
-
+if DATABASE_URL and DATABASE_URL.startswith("postgres://"):
+    DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
 app.config["SQLALCHEMY_DATABASE_URI"] = DATABASE_URL
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
