@@ -24,11 +24,17 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 app.instance_path = basedir 
 
 # 1. DB接続設定
-db_filename = 'comic_relay.sqlite'
-db_path = os.path.join(basedir, db_filename)
+# db_filename = 'comic_relay.sqlite'
+# db_path = os.path.join(basedir, db_filename)
 
-app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{db_path}' 
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+# app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{db_path}' 
+# app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+DATABASE_URL = os.environ.get("DATABASE_URL")
+
+app.config["SQLALCHEMY_DATABASE_URI"] = DATABASE_URL
+app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+
 # 2. アップロードフォルダの設定
 app.config['UPLOAD_FOLDER'] = os.path.join(basedir, 'static', 'uploads')
 app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
@@ -103,12 +109,13 @@ class PublicComment(db.Model):
     # 管理者からの一言返信（任意）
     admin_reply = db.Column(db.Text)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
-    
-with app.app_context():
-    # 接続を取得して PRAGMA を実行
-    with db.engine.connect() as conn:
-        conn.execute(db.text('PRAGMA journal_mode=WAL;'))
-        conn.execute(db.text('PRAGMA synchronous=NORMAL;'))
+
+# herokuでは不要
+# with app.app_context():
+#     # 接続を取得して PRAGMA を実行
+#     with db.engine.connect() as conn:
+#         conn.execute(db.text('PRAGMA journal_mode=WAL;'))
+#         conn.execute(db.text('PRAGMA synchronous=NORMAL;'))
 
 # ====================================================================
 # --- ヘルパー関数とルート ---
@@ -136,7 +143,7 @@ def allowed_file(filename):
 
 # 管理ページ
 @app.route('/admin/list')
-@basic_auth_required(ADMIN_USER, ADMIN_PASS) # basic認証 これでURLを知っていてもユーザー名とパスが必要
+# @basic_auth_required(ADMIN_USER, ADMIN_PASS) # basic認証 これでURLを知っていてもユーザー名とパスが必要
 def admin_list():
     comics = Comic.query.order_by(Comic.started_at.desc()).all()
     return render_template("admin_list.html", comics=comics, Koma=Koma)
@@ -149,7 +156,7 @@ def admin_list():
 # ---------------------------------------------
 
 @app.route('/admin/comic/<int:comic_id>')
-@basic_auth_required(ADMIN_USER, ADMIN_PASS)
+# @basic_auth_required(ADMIN_USER, ADMIN_PASS)
 def admin_comic_detail(comic_id):
     # Comic と関連する Koma を取得
     comic = Comic.query.get_or_404(comic_id)
@@ -159,7 +166,7 @@ def admin_comic_detail(comic_id):
 
 # 削除-----------
 @app.route('/admin/delete/comic/<int:comic_id>', methods=['POST'])
-@basic_auth_required(ADMIN_USER, ADMIN_PASS)
+# @basic_auth_required(ADMIN_USER, ADMIN_PASS)
 def delete_comic(comic_id):
     comic = Comic.query.get_or_404(comic_id)
     # コミックの is_deleted を ON にする
@@ -172,7 +179,7 @@ def delete_comic(comic_id):
     return redirect(url_for('admin_list'))
 
 @app.route('/admin/delete/koma/<int:koma_id>', methods=['POST'])
-@basic_auth_required(ADMIN_USER, ADMIN_PASS)
+# @basic_auth_required(ADMIN_USER, ADMIN_PASS)
 def delete_koma(koma_id):
     koma = Koma.query.get_or_404(koma_id)
     koma.is_deleted = 1

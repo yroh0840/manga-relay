@@ -447,3 +447,5 @@ export ADMIN_PASS=devpassword
 明日はAIを読むところからスタートしてね
 
 1/20
+
+タスク
