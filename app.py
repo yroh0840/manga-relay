@@ -46,7 +46,7 @@ app.config['UPLOAD_FOLDER'] = os.path.join(basedir, 'static', 'uploads')
 #     },
 #     "poolclass": NullPool,
 # }
-app.config['DEBUG'] = True
+app.config['DEBUG'] = False
 
 # 環境変数
 # 受け入れる画像の拡張子
