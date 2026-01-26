@@ -10,7 +10,11 @@ from datetime import datetime
 from flask_migrate import Migrate
 from functools import wraps # Basic認証用 
 from flask import Response # Basic認証用 
+import cloudinary
+import cloudinary.uploader
+import cloudinary.api
 
+cloudinary.config(sequre=True)
 # app.py の先頭に追加して実行
 # print("RUNNING FILE:", os.path.abspath(__file__))
 
@@ -270,15 +274,18 @@ def post_frame():
             new_frame_number = (max_frame or 0) + 1
 
         # ファイル保存
-        ext = file.filename.rsplit('.', 1)[1].lower()
-        filename = str(uuid.uuid4()) + '.' + ext
-        file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+        # ext = file.filename.rsplit('.', 1)[1].lower()
+        # filename = str(uuid.uuid4()) + '.' + ext
+        # file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+        # 保存パスもUUIDも不要になる
+        result = cloudinary.uploader.upload(file)
+        image_url = result["secure_url"]
 
         # DB 追加
         new_koma = Koma(
             comic_id=comic_id,
             frame_number=new_frame_number,
-            image_filename=filename
+            image_filename=image_url
         )
         db.session.add(new_koma)
         db.session.commit()

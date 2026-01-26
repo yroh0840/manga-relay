@@ -147,7 +147,9 @@
 
             {% set latest_koma = comic.komas.order_by(Koma.frame_number).first() %}
             {% if latest_koma %}
-            <img class="thumb" src="{{ url_for('static', filename='uploads/' ~ latest_koma.image_filename) }}">
+            <!-- python ローカル環境ではプロジェクトフォルダを画像ソース元でよかった -->
+            <!-- <img class="thumb" src="{{ url_for('static', filename='uploads/' ~ latest_koma.image_filename) }}"> -->
+            <img class="thumb" src="latest_koma.image_filename">
             {% else %}
             <div class="thumb"></div>
             {% endif %}
@@ -167,8 +169,6 @@
         </form>
         {% endif %}
 
-
-
         <!-- ▼▼▼ コマ一覧 ▼▼▼ -->
         <div id="koma-section-{{ comic.id }}" class="koma-grid hidden">
 
@@ -180,8 +180,9 @@
                 {% endif %}
 
 
-
-                <img src="{{ url_for('static', filename='uploads/' ~ koma.image_filename) }}">
+                <!-- python ローカル環境ではflaskの仕様でプロジェクトディレクトリでよかった -->
+                <!-- <img src="{{ url_for('static', filename='uploads/' ~ koma.image_filename) }}"> -->
+                <img src="koma.image_filename">
 
                 <div>コマ {{ koma.frame_number }}</div>
 

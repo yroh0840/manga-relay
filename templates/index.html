@@ -167,8 +167,10 @@
 
           {% if latest_koma %}
           <div class="w-full h-40 bg-gray-100 dark:bg-gray-800 rounded-lg overflow-hidden">
-            <img src="{{ url_for('static', filename='uploads/' ~ latest_koma.image_filename) }}"
-              class="object-cover w-full h-full">
+            <!-- pythonローカル環境まではプロジェクトディレクトリでよかった -->
+            <!-- <img src="{{ url_for('static', filename='uploads/' ~ latest_koma.image_filename) }}"
+            class="object-cover w-full h-full"> -->
+             <img src="latest_koma.image_filename" class="object-cover w-full h-full">
           </div>
           {% else %}
           <div class="w-full h-40 bg-gray-100 dark:bg-gray-800 rounded-lg
