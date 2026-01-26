@@ -14,7 +14,7 @@ import cloudinary
 import cloudinary.uploader
 import cloudinary.api
 
-cloudinary.config(sequre=True)
+cloudinary.config(secure=True)
 # app.py の先頭に追加して実行
 # print("RUNNING FILE:", os.path.abspath(__file__))
 
@@ -278,7 +278,9 @@ def post_frame():
         # filename = str(uuid.uuid4()) + '.' + ext
         # file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
         # 保存パスもUUIDも不要になる
-        result = cloudinary.uploader.upload(file)
+        # result = cloudinary.uploader.upload(file)
+        # cloudinaryのフォルダ構成を見やすく整理して保存
+        result = cloudinary.uploader.upload(file, folder=f"manga_relay/{comic_id}")
         image_url = result["secure_url"]
 
         # DB 追加
