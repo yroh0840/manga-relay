@@ -149,7 +149,7 @@
             {% if latest_koma %}
             <!-- python ローカル環境ではプロジェクトフォルダを画像ソース元でよかった -->
             <!-- <img class="thumb" src="{{ url_for('static', filename='uploads/' ~ latest_koma.image_filename) }}"> -->
-            <img class="thumb" src="latest_koma.image_filename">
+            <img class="thumb" src="{{latest_koma.image_filename}}">
             {% else %}
             <div class="thumb"></div>
             {% endif %}
