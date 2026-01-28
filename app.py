@@ -13,6 +13,7 @@ from flask import Response # Basic認証用
 import cloudinary
 import cloudinary.uploader
 import cloudinary.api
+import requests
 
 cloudinary.config(secure=True)
 # app.py の先頭に追加して実行
@@ -122,6 +123,32 @@ class PublicComment(db.Model):
 #     with db.engine.connect() as conn:
 #         conn.execute(db.text('PRAGMA journal_mode=WAL;'))
 #         conn.execute(db.text('PRAGMA synchronous=NORMAL;'))
+
+
+# LINEメッセージ送信用の関数
+LINE_TOKEN = os.environ.get("LINE_CHANNEL_ACCESS_TOKEN")
+LINE_USER_ID = os.environ.get("LINE_USER_ID")
+
+def send_line_notify(message):
+    if not LINE_TOKEN or not LINE_USER_ID:
+        return
+
+    url = "https://api.line.me/v2/bot/message/push"
+    headers = {
+        "Authorization": f"Bearer {LINE_TOKEN}",
+        "Content-Type": "application/json"
+    }
+    payload = {
+        "to": LINE_USER_ID,
+        "messages": [
+            {
+                "type": "text",
+                "text": message
+            }
+        ]
+    }
+
+    requests.post(url, headers=headers, json=payload)
 
 # ====================================================================
 # --- ヘルパー関数とルート ---
@@ -280,6 +307,11 @@ def post_frame():
         # 保存パスもUUIDも不要になる
         # result = cloudinary.uploader.upload(file)
         # cloudinaryのフォルダ構成を見やすく整理して保存
+        send_line_notify(
+            f"🖊 新しいコマが投稿されたよ！\n"
+            f"{request.url_root}comic/{comic_id}"
+        )
+
         result = cloudinary.uploader.upload(file, folder=f"manga_relay/{comic_id}")
         image_url = result["secure_url"]
 
