@@ -129,8 +129,10 @@ class PublicComment(db.Model):
 LINE_TOKEN = os.environ.get("LINE_CHANNEL_ACCESS_TOKEN")
 LINE_USER_ID = os.environ.get("LINE_USER_ID")
 
+LINE_GROUP_ID = os.environ.get("LINE_GROUP_ID")
+
 def send_line_notify(message):
-    if not LINE_TOKEN or not LINE_USER_ID:
+    if not LINE_TOKEN or not LINE_GROUP_ID:
         return
 
     url = "https://api.line.me/v2/bot/message/push"
@@ -139,16 +141,14 @@ def send_line_notify(message):
         "Content-Type": "application/json"
     }
     payload = {
-        "to": LINE_USER_ID,
+        "to": LINE_GROUP_ID,
         "messages": [
-            {
-                "type": "text",
-                "text": message
-            }
+            {"type": "text", "text": message}
         ]
     }
 
     requests.post(url, headers=headers, json=payload)
+
 
 @app.route("/line/webhook", methods=["POST"])
 def line_webhook():
@@ -325,6 +325,7 @@ def post_frame():
             f"🖊 新しいコマが投稿されたよ！\n"
             f"{request.url_root}comic/{comic_id}"
         )
+
 
         result = cloudinary.uploader.upload(file, folder=f"manga_relay/{comic_id}")
         image_url = result["secure_url"]
