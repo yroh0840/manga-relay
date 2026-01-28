@@ -454,7 +454,7 @@ export ADMIN_PASS=devpassword
 cloudinary herokuエラー問題クリア
 最終テスト
 問題点
-・comic_detail.htmlで画像が表示されない
+✅comic_detailのダークモードをchromeと同じにするcomic_detail.htmlで画像が表示されない
 ・非公開コメントの確認方忘れた
 ・公開コメントへの返信方法忘れた
 ・DMの確認方法忘れた
