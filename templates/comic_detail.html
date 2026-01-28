@@ -28,12 +28,11 @@
   <!-- コマ一覧 -->
   <section class="bg-white dark:bg-[#121212] p-4 rounded-xl shadow mb-6">
     <h2 class="text-xl font-bold mb-3 dark:text-gray-400">これまでのコマ</h2>
-
     <div class="space-y-6">
       {% for koma in komas %}
       <div class="border dark:border-[#414143] rounded-lg overflow-hidden bg-gray-50 shadow">
         <!-- <img class="w-full" src="{{ url_for('static', filename='uploads/' ~ koma.image_filename) }}" alt=""> -->
-        <img class="w-full" src="koma.image_filename" alt="コマ画像">
+        <img class="w-full" src="{{ koma.image_filename }}" alt="コマ画像">
 
         <div class="p-2 text-gray-600 dark:text-gray-400 text-sm dark:bg-[#1F1F20]">
           コマ番号：{{ koma.frame_number }}

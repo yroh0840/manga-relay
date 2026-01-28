@@ -449,3 +449,12 @@ export ADMIN_PASS=devpassword
 1/20
 
 タスク
+
+1/27
+cloudinary herokuエラー問題クリア
+最終テスト
+問題点
+・comic_detail.htmlで画像が表示されない
+・非公開コメントの確認方忘れた
+・公開コメントへの返信方法忘れた
+・DMの確認方法忘れた
