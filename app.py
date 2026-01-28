@@ -150,6 +150,20 @@ def send_line_notify(message):
 
     requests.post(url, headers=headers, json=payload)
 
+@app.route("/line/webhook", methods=["POST"])
+def line_webhook():
+    body = request.get_json()
+    events = body.get("events", [])
+
+    for event in events:
+        source = event.get("source", {})
+        if source.get("type") == "group":
+            group_id = source.get("groupId")
+            print("GROUP_ID:", group_id)
+
+    return "OK"
+
+
 # ====================================================================
 # --- ヘルパー関数とルート ---
 # ====================================================================

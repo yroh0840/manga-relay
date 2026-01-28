@@ -472,3 +472,5 @@ cloudinary herokuエラー問題クリア
 個人・個人（IT・コンピュータ）
 ベーシックID
 @466hnvgv
+
+Herokuは「requirements.txt に書いてあるものしかインストールしない」から。
