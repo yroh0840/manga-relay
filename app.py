@@ -15,7 +15,13 @@ import cloudinary.uploader
 import cloudinary.api
 import requests
 
-cloudinary.config(secure=True)
+# 画像などデータ保存用cloudinaryの設定
+cloudinary.config(
+    cloud_name=os.environ.get("CLOUDINARY_CLOUD_NAME"),
+    api_key=os.environ.get("CLOUDINARY_API_KEY"),
+    api_secret=os.environ.get("CLOUDINARY_API_SECRET"),
+    secure=True
+)
 # app.py の先頭に追加して実行
 # print("RUNNING FILE:", os.path.abspath(__file__))
 
