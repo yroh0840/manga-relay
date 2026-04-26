@@ -15,8 +15,6 @@ import cloudinary.uploader
 import cloudinary.api
 import requests
 
-with app.app_context():
-    db.create_all()
 
 # 画像などデータ保存用cloudinaryの設定
 cloudinary.config(
@@ -72,6 +70,9 @@ ADMIN_PASS = os.environ.get("ADMIN_PASS")
 # --- データベースの初期化 ---
 db = SQLAlchemy(app)
 # from models import AdminDM
+
+with app.app_context():
+    db.create_all()
 
 # --- フォルダの作成 ---
 if not os.path.exists(app.config['UPLOAD_FOLDER']):
