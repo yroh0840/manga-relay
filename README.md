@@ -1,7 +1,6 @@
 # Manga Relay
 
 漫画のコマを投稿し、リレー形式でつなげていくWebサービスです。
-
 ※本リポジトリはMVP検証用のため、一部未整理のコードが含まれています。
 
 ## 概要
@@ -14,6 +13,12 @@
 - 一覧表示
 - 詳細表示
 - 管理機能
+
+## 構成
+- app.py → メインアプリ
+- templates/ → フロント
+- migrations/ → DB管理
+- requirements.txt → 依存関係
 
 ## 使用技術
 - Python（Flask）
