@@ -271,6 +271,12 @@ def admin_dm():
     return render_template("admin_dm.html", hide_dm_link=True)
 
 
+@app.route("/init-db")
+def init_db():
+    with app.app_context():
+        db.create_all()
+    return "DB created"
+
 # --- index ルート (一覧表示と投稿フォーム) ---
 @app.route('/')
 def index():
