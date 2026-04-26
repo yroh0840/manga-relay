@@ -2,33 +2,37 @@
 venv/
 env/
 .venv/
+manga-relay-venv/
 
 # Python
+_archive
 __pycache__/
 *.pyc
 
 # 環境変数
 .env
 
-# アップロードファイル
+# アップロード
 uploads/
 static/uploads/
 
-# データベース
-*.sqlite3
+# DB
 *.sqlite
-*.sqlite-wal
-*.sqlite-shm
+*.sqlite*
+*.db
+dev.db
 
 # バックアップ
 *.bak
 backups/
 *.zip
+backup.sh
+backup_zip.py
 
 # OS
 .DS_Store
 
-# 個人メモ
-.memo.txt
+# 個人
+memo.txt
 pass.txt
 pass2.txt
