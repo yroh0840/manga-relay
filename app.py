@@ -15,6 +15,9 @@ import cloudinary.uploader
 import cloudinary.api
 import requests
 
+with app.app_context():
+    db.create_all()
+
 # 画像などデータ保存用cloudinaryの設定
 cloudinary.config(
     cloud_name=os.environ.get("CLOUDINARY_CLOUD_NAME"),
