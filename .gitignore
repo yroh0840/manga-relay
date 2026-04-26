@@ -1,14 +1,34 @@
-.memo.txt
+# 仮想環境
+venv/
+env/
+.venv/
+
+# Python
+__pycache__/
+*.pyc
+
+# 環境変数
+.env
+
+# アップロードファイル
+uploads/
 static/uploads/
-manga-relay-venv/
-.DS_Store
+
+# データベース
 *.sqlite3
 *.sqlite
 *.sqlite-wal
 *.sqlite-shm
+
+# バックアップ
 *.bak
 backups/
 *.zip
-.env
+
+# OS
+.DS_Store
+
+# 個人メモ
+.memo.txt
 pass.txt
 pass2.txt
