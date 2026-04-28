@@ -14,19 +14,26 @@ import cloudinary
 import cloudinary.uploader
 import cloudinary.api
 import requests
-from dotenv import load_dotenv
+# from dotenv import load_dotenv
 
 # 環境変数を読み込み
-load_dotenv()
+# load_dotenv()
 
 
 # 画像などデータ保存用cloudinaryの設定
-cloudinary.config(
-    cloud_name=os.environ.get("CLOUDINARY_CLOUD_NAME"),
-    api_key=os.environ.get("CLOUDINARY_API_KEY"),
-    api_secret=os.environ.get("CLOUDINARY_API_SECRET"),
-    secure=True
-)
+cloudinary_url = os.environ.get("CLOUDINARY_URL")
+
+if cloudinary_url:
+    cloudinary.config_from_url(cloudinary_url)
+else:
+    print("WARNING: CLOUDINARY_URL is not set")
+
+# cloudinary.config(
+#     cloud_name=os.environ.get("CLOUDINARY_CLOUD_NAME"),
+#     api_key=os.environ.get("CLOUDINARY_API_KEY"),
+#     api_secret=os.environ.get("CLOUDINARY_API_SECRET"),
+#     secure=True
+# )
 # app.py の先頭に追加して実行
 # print("RUNNING FILE:", os.path.abspath(__file__))
 
@@ -48,6 +55,8 @@ app.instance_path = basedir
 
 # DB.postgres設定
 DATABASE_URL = os.environ.get("DATABASE_URL")
+if not DATABASE_URL:
+    raise Exception("DATABASE_URL is not set")
 if DATABASE_URL and DATABASE_URL.startswith("postgres://"):
     DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
 app.config["SQLALCHEMY_DATABASE_URI"] = DATABASE_URL
@@ -74,9 +83,6 @@ ADMIN_PASS = os.environ.get("ADMIN_PASS")
 # --- データベースの初期化 ---
 db = SQLAlchemy(app)
 # from models import AdminDM
-
-with app.app_context():
-    db.create_all()
 
 # --- フォルダの作成 ---
 if not os.path.exists(app.config['UPLOAD_FOLDER']):
